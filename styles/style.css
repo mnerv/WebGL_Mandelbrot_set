@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:300,400&display=swap");
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 100;
+}
+
+canvas {
+  margin: auto;
+  z-index: 1;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+  cursor: default;
+}
+
+.blueColor {
+  color: #89ffff !important;
+}
+
+.redColor {
+  color: #ff2652 !important;
+}
+
+.status {
+  position: absolute;
+  color: white;
+}
+
+.status p {
+  padding: 0;
+  margin: 0;
+  margin: 0;
+  color: #a3a3a3;
+  font-size: 11pt;
+}
+
+.status .fpsContainer {
+  background-color: rgba(37, 37, 37, 0.45);
+  padding: 4pt 5pt;
+}
+
+.status .fpsContainer p {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  padding: 0pt 1pt 0pt 2pt;
+}
+
+.status .loopStatus {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  background-color: rgba(37, 37, 37, 0.45);
+  padding: 4pt 5pt;
+  border-radius: 0 0 2pt 0;
+  width: 75pt;
+}
+
+.status .loopStatus p {
+  padding: 0pt 2pt;
+}
+
+.status .loopStatus #playpause:hover {
+  cursor: pointer;
+}
+/*# sourceMappingURL=style.css.map */
