@@ -1,5 +1,5 @@
 #ifdef GL_ES
-precision highp float;
+precision mediump float;
 #endif
 
 uniform vec2 u_resolution; // Canvas size (width,height)
@@ -12,14 +12,14 @@ vec2 rot2D(vec2 p, vec2 pivot, float a);
 
 void main() {
   vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / u_resolution.y;
+  uv = gl_FragCoord.xy;
   vec4 Area = u_Area;
 
   Area.z = pow(10., -Area.z);
   Area.w = pow(10., -Area.w);
 
-  vec2 c = Area.xy + (uv)*Area.zw;
+  vec2 c = Area.xy + (uv - 0.5 * u_resolution.xy) * Area.zw;
   c = rot2D(c, Area.xy, u_Angle);
-  // c += vec2(-0.7 463, 0.1102);
   vec2 z;
   float iter;
 
