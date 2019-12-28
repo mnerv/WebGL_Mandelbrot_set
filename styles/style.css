@@ -1,10 +1,11 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:300,400&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:100,300&display=swap");
 body {
   margin: 0;
   padding: 0;
   overflow: hidden;
   font-family: 'Roboto Mono', monospace;
   font-weight: 100;
+  font-size: 11pt;
 }
 
 canvas {
@@ -36,46 +37,146 @@ canvas {
   color: #ff2652 !important;
 }
 
+p {
+  padding: 0;
+  margin: 0;
+  margin: 0;
+  color: #a3a3a3;
+}
+
+label {
+  font-size: 1.2em;
+}
+
+input[type='text'] {
+  background-color: #191919;
+  color: white;
+  border-radius: 3pt;
+  outline: none;
+  border: none;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  height: 20pt;
+  margin: 0;
+  font-family: 'Roboto Mono';
+  font-size: 11pt;
+  font-weight: 100;
+  padding: 5pt 5pt;
+}
+
+input::-webkit-input-placeholder {
+  opacity: 0.5;
+}
+
+input:-ms-input-placeholder {
+  opacity: 0.5;
+}
+
+input::-ms-input-placeholder {
+  opacity: 0.5;
+}
+
+input::placeholder {
+  opacity: 0.5;
+}
+
+button {
+  background-color: #333333;
+  border: none;
+  border-radius: 3pt;
+  color: inherit;
+  height: 100%;
+  padding: 0 1em;
+  font-size: 0.9em;
+  margin: 0;
+  cursor: pointer;
+}
+
+button:active {
+  background-color: #191919;
+  color: inherit;
+}
+
+button:disabled {
+  background: #191919;
+}
+
 .status {
   position: absolute;
   color: white;
 }
 
-.status p {
-  padding: 0;
-  margin: 0;
-  margin: 0;
-  color: #a3a3a3;
-  font-size: 11pt;
-}
-
-.status .fpsContainer {
-  background-color: rgba(37, 37, 37, 0.45);
+.fpsContainer {
+  background-color: rgba(37, 37, 37, 0.5);
   padding: 4pt 5pt;
 }
 
-.status .fpsContainer p {
+.fpsContainer p {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
   padding: 0pt 1pt 0pt 2pt;
 }
 
-.status .loopStatus {
+.loopStatus {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
-  background-color: rgba(37, 37, 37, 0.45);
+  background-color: rgba(37, 37, 37, 0.5);
   padding: 4pt 5pt;
   border-radius: 0 0 2pt 0;
   width: 75pt;
 }
 
-.status .loopStatus p {
+.loopStatus p {
   padding: 0pt 2pt;
 }
 
-.status .loopStatus #playpause:hover {
+.loopStatus #playpause:hover {
   cursor: pointer;
+}
+
+.minibar {
+  left: 5pt;
+  bottom: 5pt;
+  width: 130pt;
+  opacity: 0.5;
+  padding: 5pt 4pt 4pt 6pt;
+  border-radius: 3pt;
+  background-color: black;
+}
+
+.minibar .sectiontitle {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: auto 1fr;
+      grid-template-columns: auto 1fr;
+  justify-items: start;
+  padding: 2pt 0pt;
+  gap: 5pt;
+}
+
+.minibar .sectiontitle p {
+  margin: auto 0;
+}
+
+.minibar .sectiontitle button {
+  width: 2em;
+  height: 2em;
+  text-align: center;
+  padding: 0;
+}
+
+.minibar .textinput {
+  position: relative;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  padding: 2pt 0pt;
+}
+
+.minibar p {
+  color: white;
 }
 /*# sourceMappingURL=style.css.map */
