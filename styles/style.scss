@@ -46,7 +46,7 @@ p {
 }
 
 label {
-  font-size: 1.2em;
+  font-size: 1.1em;
 }
 
 input[type='text'] {
@@ -68,6 +68,57 @@ input[type='text'] {
 
 input::placeholder {
   opacity: 0.5;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10pt;
+  border-radius: 5pt;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15pt;
+  height: 15pt;
+  border-radius: 50%;
+  background: #191919;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 15pt;
+  height: 15pt;
+  border-radius: 50%;
+  background: #191919;
+  cursor: pointer;
+}
+
+.redslider::-webkit-slider-thumb {
+  background: #ff5858;
+}
+.redslider::-webkit-slider-thumb {
+  background: #ff5858;
+}
+
+.greenslider::-webkit-slider-thumb {
+  background: rgb(0, 255, 0);
+}
+.greenslider::-webkit-slider-thumb {
+  background: rgb(0, 255, 0);
+}
+
+.blueslider::-webkit-slider-thumb {
+  background: rgb(76, 76, 255);
+}
+.blueslider::-webkit-slider-thumb {
+  background: rgb(76, 76, 255);
 }
 
 button {
@@ -126,25 +177,30 @@ button:disabled {
   left: 5pt;
   bottom: 5pt;
   width: 130pt;
-  opacity: 0.5;
 
-  padding: 5pt 4pt 4pt 6pt;
+  padding: 5pt 5pt 5pt 6pt;
   border-radius: $bRadius;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.5);
   .sectiontitle {
     display: grid;
-    grid-template-columns: auto 1fr;
-    justify-items: start;
+    grid-template-columns: auto max-content;
     padding: 2pt 0pt;
     gap: 5pt;
+
     p {
       margin: auto 0;
+      font-size: 12pt;
+      color: white;
     }
+
     button {
-      width: 2em;
-      height: 2em;
+      display: inline-block;
+      width: 20pt;
+      height: 20pt;
       text-align: center;
+      font-size: 12pt;
       padding: 0;
+      margin: 0 auto;
     }
   }
   .textinput {
@@ -153,7 +209,27 @@ button:disabled {
     padding: 2pt 0pt;
   }
 
-  p {
-    color: white;
+  .aligncontainer {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 2pt;
   }
+
+  .rangeinput {
+    display: grid;
+    grid-template-columns: auto;
+    padding-bottom: 5pt;
+    gap: 4pt;
+    p {
+      color: white;
+    }
+  }
+}
+
+.miniextra {
+  // display: none;
+}
+
+.minishow {
+  // display: contents;
 }

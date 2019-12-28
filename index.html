@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles/style.css" />
-    <title>WEBGL Mandelbrot Set</title>
+    <title>WebGL Mandelbrot Set</title>
 
     <script src="libraries/p5.js"></script>
     <script src="libraries/p5.dom.js"></script>
@@ -20,21 +20,63 @@
     <div class="minibar status noselect">
       <div class="sectiontitle">
         <p>location</p>
-        <button id="updateLocation">&#x21bb</button>
+        <button title="Apply Coordinate" id="updateLocation">&#x21bb;</button>
+        <!-- <button title="More Settings" id="expandBtn" class="settingsbtn">
+          &DownArrowBar;
+        </button> -->
       </div>
       <div class="textinput">
-        <label for="xInput">x:</label>
+        <label title="x location" for="xInput">x:</label>
         <input id="xInput" type="text" />
       </div>
       <div class="textinput">
-        <label for="yInput">y:</label>
+        <label title="y location" for="yInput">y:</label>
         <input id="yInput" type="text" />
       </div>
-      <!-- <div class="sliderinput">
-        <label for="cowbell">scale</label>
-        <input type="range" id="cowbell" name="cowbell" 
-        min="0" max="100" value="90" step="10">
-      </div> -->
+      <div class="textinput aligncontainer">
+        <label title="Maximum iteration" for="maxiter">max_iter:</label>
+        <input id="maxiter" type="text" value="255" />
+        <label title="Maximum escape radius" for="maxrad">max_rad:</label>
+        <input id="maxrad" type="text" value="10" />
+      </div>
+      <div class="rangeinput">
+        <p>symmetry:</p>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value="0"
+          class="slider"
+          id="syminput"
+        />
+      </div>
+      <div class="rangeinput">
+        <p>color gradient</p>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value="0"
+          class="slider redslider"
+          id="redinput"
+        />
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value="0"
+          class="slider greenslider"
+          id="greeninput"
+        />
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value="0"
+          class="slider blueslider"
+          id="blueinput"
+        />
+      </div>
     </div>
     <div class="settings status noselect"></div>
   </body>
