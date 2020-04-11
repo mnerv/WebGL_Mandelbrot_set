@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;300;400&display=swap');
+
+@import './minibar.scss';
+
+$bg: #0e0e0e;
+$textColor: white;
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 11pt;
+}
+
+body {
+  background-color: $bg;
+  color: $textColor;
+  overflow: hidden;
+}
+
+footer {
+  font-family: 'Roboto Mono', monospace;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+label {
+  font-size: 1.1em;
+}
+
+input[type='text'] {
+  background-color: #191919;
+  color: white;
+  border-radius: 3pt;
+  outline: none;
+  border: none;
+  width: 100%;
+  box-sizing: border-box;
+
+  height: 20pt;
+  margin: 0;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 11pt;
+  font-weight: 100;
+  padding: 5pt 5pt;
+}
+
+input::placeholder {
+  opacity: 0.5;
+}
+
+button {
+  background-color: #333333;
+  border: none;
+  border-radius: 3pt;
+  color: inherit;
+  height: 100%;
+  padding: 0 1em;
+  font-size: 0.9em;
+  margin: 0;
+  cursor: pointer;
+}
+
+button:active {
+  background-color: #191919;
+  color: inherit;
+}
+
+button:disabled {
+  background: #191919;
+}
+
+a {
+  font-family: 'Roboto Mono', monospace;
+  text-decoration: none;
+  font-size: 12pt;
+  font-weight: 300;
+  margin: auto;
+
+  color: #8a8a8a;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+  cursor: default;
+}
+
+.container {
+  height: 100%;
+
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+.links-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  background-color: #191919;
+  padding: 2pt 5pt;
+  border-radius: 5pt 0 0 0;
+
+  height: 12pt;
+
+  a {
+    font-size: 11pt;
+    margin-bottom: 1pt;
+    img {
+      height: 12px;
+      width: 12px;
+      margin: auto 0;
+      margin-bottom: 0.5pt;
+      margin-right: 4pt;
+    }
+
+    margin: auto;
+
+    margin-bottom: 1.5pt;
+  }
+}
+
+.pixelated {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.column-container {
+  display: flex;
+}
