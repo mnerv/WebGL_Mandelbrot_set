@@ -2,10 +2,8 @@ const minibarHTMLText = `
 <div class="minibar-container noselect overlay">
 <div class="section-title-container">
   <p>location</p>
-  <!--<button title="Apply Coordinate" id="updateLocation">&#x21bb;</button>-->
-  <!-- <button title="More Settings" id="expandBtn" class="settingsbtn">
-    &DownArrowBar;
-  </button> -->
+  <button title="More Settings" id="open-settings"></button>
+  <button title="More Settings" id="minimize">–</button>
 </div>
 <div class="textinput-container">
   <label title="x location" for="xInput">x:</label>

@@ -1,7 +1,8 @@
 class DebugLogger {
   /**
-   * DebugLogger for displaying status and fps into the DOM element
-   * @param {Object} config {consoleLog: boolean, loopLog: boolean, overlay: boolean, graph: boolean}
+   * DebugLogger for displaying status and fps into the DOM element.
+   * The DOM element will be append in the body with absolute position.
+   * @param {Object} config {loopStatusLog: boolean, overlay: boolean, graph: boolean, consoleLogFPS: boolean}
    * @param {Function} loopToggle Callback function for toggle loop
    */
   constructor(config, loopToggle) {
@@ -23,8 +24,8 @@ class DebugLogger {
     this.config = config
       ? config
       : {
-          consoleLog: false,
-          loopLog: false,
+          consoleLogFPS: false,
+          loopStatusLog: false,
           overlay: false,
           graph: false,
         }
@@ -50,9 +51,12 @@ class DebugLogger {
     }
   }
 
+  /**
+   * Update the values, call this function every animation to calculate the FPS and display it.
+   */
   update() {
     this.calculateFPS()
-    if (this.config.consoleLog) this.consoleLog()
+    if (this.config.consoleLogFPS) this.consoleLogFPS()
     if (
       this.config.overlay &&
       performance.now() - this.lastUpdateTime > this.updateRate
@@ -76,7 +80,7 @@ class DebugLogger {
     this.lastCalledTime = performance.now()
   }
 
-  consoleLog() {
+  consoleLogFPS() {
     console.log(
       `%cframerate: ${this.framerate.toFixed(
         2
@@ -90,6 +94,14 @@ class DebugLogger {
       2
     )} fps`
     this.DOMelements.ft.innerHTML = `frametime: ${this.frameTime.toFixed(2)} ms`
+  }
+
+  /**
+   * Set update interval for the FPS and frame time display in the overlay. Does not effect the graph.
+   * @param {Number} value Time in milliseconds
+   */
+  setUpdateRate(value) {
+    this.updateRate = value
   }
 
   updateGraphData() {
@@ -124,6 +136,10 @@ class DebugLogger {
     this.ctx.stroke()
   }
 
+  /**
+   * Init the DOM element, this is function is called in the constructor if overlay is true.
+   * @param {Function} loopToggle Callback function for the true/false text on the debug overlay
+   */
   initDOM(loopToggle) {
     const doesDebugExist = document.getElementById('debug-container')
     const debugContainerEl = doesDebugExist
@@ -153,9 +169,10 @@ class DebugLogger {
     const loopStatusText = document.createElement('span')
     loopStatusText.innerHTML = 'loop: '
     this.DOMelements.loop = document.createElement('span')
+    this.DOMelements.loop.innerHTML = 'not_updated'
     if (loopToggle) {
       this.DOMelements.loop.addEventListener('click', loopToggle)
-      this.DOMelements.loop.style = `cursor: Pointer;`
+      this.setTOFStyle(true)
     }
 
     loopStatusContainer.appendChild(loopStatusText)
@@ -178,11 +195,32 @@ class DebugLogger {
     document.body.appendChild(debugContainerEl)
   }
 
+  /**
+   * Update the DOM element and Loop console status if they are enable in the config
+   * @param {Boolean} tof True or False
+   */
   loopStatus(tof) {
-    if (this.config.overlay) this.DOMelements.loop.innerHTML = tof
-    if (this.config.loopLog) DebugLogger.logLoopStatus(tof)
+    if (this.config.overlay) {
+      this.DOMelements.loop.innerHTML = tof
+      this.setTOFStyle(tof)
+    }
+    if (this.config.loopStatusLog) DebugLogger.logLoopStatus(tof)
   }
 
+  setTOFStyle(tof) {
+    this.DOMelements.loop.style = `cursor: Pointer;color:${
+      tof ? '#5EE1F0' : '#FF2E62'
+    }`
+  }
+
+  Log(message) {
+    if (this.config.log) console.log(message)
+  }
+
+  /**
+   * Log loop: true/false onto the console
+   * @param {Boolean} tof True or False
+   */
   static logLoopStatus(tof) {
     const fontSize = 'font-size: 14px;',
       fontFamily = "font-family: 'Roboto Mono', monospace;",

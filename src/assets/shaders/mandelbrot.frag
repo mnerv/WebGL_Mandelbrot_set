@@ -8,7 +8,7 @@ precision highp float;
 
 #define PI 3.14159265359
 
-uniform vec2 u_resolution; // Canvas size (width,height)
+uniform vec2 u_resolution; // Canvas size (width, height)
 uniform float u_time;
 uniform vec4 u_area;
 uniform vec4 u_coloOffset;

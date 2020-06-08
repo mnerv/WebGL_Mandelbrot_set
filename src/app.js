@@ -26,7 +26,7 @@ let settingsConfig = {
 }
 
 const DEBUG = new DebugLogger(
-  { overlay: true, graph: true, loopLog: true },
+  { overlay: true, graph: true, loopStatusLog: true },
   stopStart
 )
 
@@ -60,6 +60,7 @@ let animationID = null
 let loopStatus = true
 let autoStopStart = true
 let frameCount = 0
+let isMouseDwon = false
 
 let vertShaderText, fragShaderText, shader
 
@@ -69,11 +70,15 @@ let vertices, indices, texCoords
 
 const MAX_ITER = 30000
 
-let navStep = 0.05
+const navStartStep = 0.05
+let navStep = navStartStep
 let smoothStep = 0.1
 let scaleStep = 0.01
 let rotationStep = Math.PI / 180
 
+let keysDown = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+let ongoingTouches = []
 let minibarEl = {} // Object for storing settings element
 let navKey = [
   0, // x: -1, 0, 1
@@ -85,12 +90,6 @@ let maxIter = 256
 let maxRadius = 10
 let symmetry = 0
 let colorOffset = settingsConfig.color
-// let colorOffset = [
-//   0.3, // r
-//   0.4, // g
-//   0.65, // b
-//   50,
-// ]
 
 // actual value
 let navValue = [
@@ -240,7 +239,7 @@ function updateNavValues() {
 
   navSmooth[4] = lerp(navSmooth[4], navValue[4], smoothStep) // rotation
 
-  navStep += navStep * scaleStep * navKey[2] * 2.2
+  navStep = navStartStep * Math.pow(10, navValue[2]) * 0.5
 }
 
 function loop() {
@@ -303,6 +302,7 @@ function updateMandelbrotValue() {
   shader.SetUniform1f(gl, 'u_radius', maxRadius)
   shader.SetUniform1f(gl, 'u_maxIter', maxIter)
   shader.SetUniform1f(gl, 'u_sym', symmetry)
+  shader.SetUniform1f(gl, 'u_time', (performance.now() / 1000) * 1.5)
 }
 
 function updateDOMEl() {
@@ -311,6 +311,15 @@ function updateDOMEl() {
 }
 
 function domInputEvent(event) {
+  navValue[0] =
+    parseFloat(minibarEl.loc.x.value) == NaN
+      ? navKey[0]
+      : parseFloat(minibarEl.loc.x.value)
+  navValue[1] =
+    parseFloat(minibarEl.loc.y.value) == NaN
+      ? navKey[1]
+      : parseFloat(minibarEl.loc.y.value)
+
   symmetry = minibarEl.sym.value / 100
   colorOffset[0] = minibarEl.color.r.value / 100
   colorOffset[1] = minibarEl.color.g.value / 100
@@ -353,6 +362,19 @@ function getMiniBarDOM() {
   minibarEl.color.r.addEventListener('input', domInputEvent)
   minibarEl.color.g.addEventListener('input', domInputEvent)
   minibarEl.color.b.addEventListener('input', domInputEvent)
+
+  // Click events
+  rendererEl.addEventListener('mousedown', mouseStart)
+  rendererEl.addEventListener('mouseup', mouseEnd)
+  rendererEl.addEventListener('mousemove', (e) => {
+    handleMouse('mousemove', e)
+  })
+
+  // Touch events
+  // rendererEl.addEventListener('touchstart', handleStart, false)
+  // rendererEl.addEventListener('touchmove', handleMove, false)
+  // rendererEl.addEventListener('touchend', handleEnd, false)
+  // rendererEl.addEventListener('touchcancel', handleCancel, false)
 }
 
 function setRadius(event) {
@@ -380,6 +402,80 @@ function setMaxIter(event) {
   minibarEl.maxIter.value = maxIter
 }
 
+// function copyTouch({ identifier, pageX, pageY }) {
+//   return { identifier, pageX, pageY }
+// }
+
+// function ongoingTouchIndexById(idToFind) {
+//   for (let i = 0; i < ongoingTouches.length; i++) {
+//     let id = ongoingTouches[i].identifier
+
+//     if (id == idToFind) {
+//       return i
+//     }
+//   }
+//   return -1 // not found
+// }
+
+// function handleStart(event) {
+//   event.preventDefault()
+//   console.log('touchStart')
+//   let touches = event.changedTouches
+
+//   for (let i = 0; i < touches.length; i++) {
+//     ongoingTouches.push(copyTouch(touches[i]))
+
+//     console.log('touchstart:' + i + '.')
+//   }
+// }
+
+// function handleMove(event) {
+//   event.preventDefault()
+//   console.log('touchMove')
+//   let touches = event.changedTouches
+
+//   let idx
+//   for (let i = 0; i < touches.length; i++) {
+//     idx = ongoingTouchIndexById(touches[i].identifier)
+
+//     if (idx >= 0) {
+//       ongoingTouches.splice(idx, 1, copyTouch(touches[i])) // swap in the new touch record
+//     } else {
+//       console.log("can't figure out which touch to continue")
+//     }
+//   }
+// }
+
+// function handleEnd(event) {
+//   event.preventDefault()
+//   console.log('touchEnd')
+//   let touches = event.changedTouches
+
+//   let idx
+//   for (let i = 0; i < touches.length; i++) {
+//     idx = ongoingTouchIndexById(touches[i].identifier)
+//     if (idx >= 0) {
+//       ongoingTouches.splice(idx, 1) // remove it; we're done
+//     } else {
+//       console.log("can't figure out which touch to end")
+//     }
+//   }
+
+//   console.log(ongoingTouches.length)
+// }
+
+// function handleCancel(event) {
+//   event.preventDefault()
+//   console.log('touchcancel.')
+//   let touches = event.changedTouches
+
+//   let idx
+//   for (var i = 0; i < touches.length; i++) {
+//     idx = ongoingTouchIndexById(touches[i].identifier)
+//     ongoingTouches.splice(idx, 1) // remove it; we're done
+//   }
+// }
+
 function controls(type, key) {
   if (type == 'keydown') {
     // Move in x-axis
@@ -399,20 +495,20 @@ function controls(type, key) {
     else if (key == 'q') navKey[3] = 1
   } else if (type == 'keyup') {
     // Stop Moving in x-axis
-    if (key == 'd' || key == 'ArrowRight') navKey[0] = 0
-    else if (key == 'a' || key == 'ArrowLeft') navKey[0] = 0
+    if ((key == 'd' || key == 'ArrowRight') && navKey[0] != -1) navKey[0] = 0
+    else if ((key == 'a' || key == 'ArrowLeft') && navKey[0] != 1) navKey[0] = 0
 
     // Stop Moving in y-axis
-    if (key == 'w' || key == 'ArrowUp') navKey[1] = 0
-    else if (key == 's' || key == 'ArrowDown') navKey[1] = 0
+    if ((key == 'w' || key == 'ArrowUp') && navKey[1] != -1) navKey[1] = 0
+    else if ((key == 's' || key == 'ArrowDown') && navKey[1] != 1) navKey[1] = 0
 
     // Stop Zooming
-    if (key == 'Shift' || key == 'z') navKey[2] = 0
-    else if (key == 'Control' || key == 'x') navKey[2] = 0
+    if ((key == 'Shift' || key == 'z') && navKey[2] != 1) navKey[2] = 0
+    else if ((key == 'Control' || key == 'x') && navKey[2] != -1) navKey[2] = 0
 
     // Stop Rotating
-    if (key == 'e') navKey[3] = 0
-    else if (key == 'q') navKey[3] = 0
+    if (key == 'e' && navKey[3] != 1) navKey[3] = 0
+    else if (key == 'q' && navKey[3] != -1) navKey[3] = 0
   }
 }
 
@@ -420,6 +516,20 @@ function keyboardInput(type, event) {
   controls(type, event.key)
 
   if (event.code == 'Space' && type == 'keyup') stopStart()
+}
+
+function mouseEnd(event) {
+  isMouseDwon = false
+}
+
+function mouseStart(event) {
+  isMouseDwon = true
+}
+
+function handleMouse(type, event) {
+  if (isMouseDwon) {
+    console.log("it's working")
+  }
 }
 
 window.addEventListener('resize', () => {

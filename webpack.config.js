@@ -37,6 +37,7 @@ const modules = {
         {
           loader: 'file-loader',
           options: {
+            name: '[name].[contenthash].[ext]',
             outputPath: 'assets/images',
             esModule: false,
           },
@@ -49,6 +50,7 @@ const modules = {
         {
           loader: 'file-loader',
           options: {
+            name: '[name].[contenthash].[ext]',
             outputPath: 'assets/shaders',
           },
         },
@@ -61,6 +63,7 @@ const modules = {
         {
           loader: 'file-loader',
           options: {
+            name: '[name].[contenthash].[ext]',
             outputPath: 'assets/json',
           },
         },
@@ -89,8 +92,8 @@ const plugins = [
     favicon: './src/assets/favicon.png',
   }),
   new MiniCssExtractPlugin({
-    filename: '[name].css',
-    chunkFilename: '[id].css',
+    filename: '[name].[contenthash].css',
+    chunkFilename: '[id].[contenthash].css',
   }),
 ]
 
@@ -100,10 +103,15 @@ const devServer = {
   compress: true,
 }
 
+const output = {
+  filename: '[name].[contenthash].js',
+}
+
 module.exports = {
   entry: './src/app.js',
   stats,
   module: modules,
   plugins,
   devServer,
+  output,
 }

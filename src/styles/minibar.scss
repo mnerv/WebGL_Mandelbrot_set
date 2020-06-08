@@ -20,24 +20,38 @@
   }
 
   .section-title-container {
-    display: grid;
-    grid-template-columns: auto max-content;
+    display: flex;
+    // grid-template-columns: auto max-content;
     padding: 2pt 0pt;
     gap: 5pt;
 
     p {
       margin: auto 0;
       color: white;
+      margin-right: auto;
     }
 
     button {
       width: 20pt;
       height: 20pt;
       padding: 0;
+      padding-bottom: 1pt;
       margin: 0;
+      margin-left: 5pt;
 
-      font-size: 14pt;
-      line-height: 12pt;
+      font-size: 18pt;
+      line-height: 14pt;
+      border: none;
+      outline: none;
+    }
+
+    #open-settings {
+      display: table-cell;
+      vertical-align: middle;
+      line-height: 20pt;
+    }
+
+    #minimize {
     }
   }
 
