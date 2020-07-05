@@ -1,7 +1,7 @@
 // #pragma optionNV(fastmath off)
 // #pragma optionNV(fastprecision off)
-// #extension GL_OES_standard_derivatives : enable
-// #extension GL_ARB_gpu_shader_fp64 : enable
+#extension GL_OES_standard_derivatives : enable
+#extension GL_ARB_gpu_shader_fp64 : enable
 #ifdef GL_ES
 precision highp float;
 #endif
@@ -18,6 +18,8 @@ uniform float u_maxIter;
 uniform float u_sym;
 
 varying vec2 v_TexCoord;
+
+vec3 gradient() { return vec3(0); }
 
 vec2 rot2D(vec2 p, vec2 pivot, float a);
 
