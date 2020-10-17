@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "ES6",
+    "lib": ["ES2017", "DOM"],
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": ".",
+    "removeComments": false,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": false,
+    "paths": {
+      "Engine/*": ["src/Engine/*"],
+      "Sandbox/*": ["src/Sandbox/*"],
+      "Assets/*": ["src/Assets/*"],
+    }
+  }
+}

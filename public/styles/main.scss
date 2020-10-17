@@ -1,0 +1,21 @@
+html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: #111111;
+}
+
+#app,
+#Display {
+  display: block;
+  margin: auto;
+  height: 100%;
+
+  // // Set scaling to Nearest Neighbor
+  image-rendering: pixelated;
+}

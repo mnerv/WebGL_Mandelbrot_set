@@ -1,3 +1,3 @@
-# Mandelbrot Set
+# Mandelbrot set
 
 Mandelbrot set in WebGL!
