@@ -1,4 +1,4 @@
-import { Application, Time } from 'Engine/Engine'
+import { Application, Time, Shader } from 'Engine/Engine'
 
 import FS_SOURCE from 'Assets/Shaders/basic.10.frag'
 import VS_SOURCE from 'Assets/Shaders/basic.10.vert'
@@ -28,36 +28,8 @@ export class Sandbox extends Application {
     this.gl = this.display.getContext('webgl') as WebGLRenderingContext
     this.gl.clearColor(0.0, 195 / 255, 255 / 255, 1.0)
 
-    const vs = this.gl.createShader(this.gl.VERTEX_SHADER) as WebGLShader
-    this.gl.shaderSource(vs, VS_SOURCE)
-    this.gl.compileShader(vs)
-    if (!this.gl.getShaderParameter(vs, this.gl.COMPILE_STATUS)) {
-      this.gl.deleteShader(vs)
-      throw new Error(
-        'Error compiling shaders: ' + this.gl.getShaderInfoLog(vs)
-      )
-    }
-
-    const fs = this.gl.createShader(this.gl.FRAGMENT_SHADER) as WebGLShader
-    this.gl.shaderSource(fs, FS_SOURCE)
-    this.gl.compileShader(fs)
-    if (!this.gl.getShaderParameter(fs, this.gl.COMPILE_STATUS)) {
-      this.gl.deleteShader(fs)
-      throw new Error(
-        'Error compiling shaders: ' + this.gl.getShaderInfoLog(fs)
-      )
-    }
-
-    const sp = this.gl.createProgram() as WebGLProgram
-    this.gl.attachShader(sp, vs)
-    this.gl.attachShader(sp, fs)
-    this.gl.linkProgram(sp)
-    if (!this.gl.getProgramParameter(sp, this.gl.LINK_STATUS)) {
-      throw new Error(
-        'Unable to initialize the shader program: ' +
-          this.gl.getProgramInfoLog(sp)
-      )
-    }
+    let shader = new Shader(this.gl, VS_SOURCE, FS_SOURCE)
+    shader.bind()
 
     const vb = this.gl.createBuffer()
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vb)
@@ -67,7 +39,7 @@ export class Sandbox extends Application {
       this.gl.STATIC_DRAW
     )
 
-    const pal = this.gl.getAttribLocation(sp, 'a_position') // Position Atttribute Location
+    const pal = this.gl.getAttribLocation(shader.id, 'a_position') // Position Atttribute Location
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vb)
     this.gl.vertexAttribPointer(
       pal,
@@ -87,7 +59,7 @@ export class Sandbox extends Application {
       this.gl.STATIC_DRAW
     )
 
-    const cal = this.gl.getAttribLocation(sp, 'a_color') // Color Attribute Location
+    const cal = this.gl.getAttribLocation(shader.id, 'a_color') // Color Attribute Location
     this.gl.vertexAttribPointer(
       cal,
       4,
@@ -98,7 +70,7 @@ export class Sandbox extends Application {
     )
     this.gl.enableVertexAttribArray(cal)
 
-    const uval = this.gl.getAttribLocation(sp, 'a_uv') // UV Attribute Location
+    const uval = this.gl.getAttribLocation(shader.id, 'a_uv') // UV Attribute Location
     this.gl.vertexAttribPointer(
       uval,
       2,
@@ -109,7 +81,7 @@ export class Sandbox extends Application {
     )
     this.gl.enableVertexAttribArray(uval)
 
-    this.gl.useProgram(sp)
+    shader.bind()
   }
 
   update(time: Time): void {}
