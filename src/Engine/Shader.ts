@@ -42,7 +42,7 @@ export class Shader {
     this.gl.compileShader(s)
     if (!this.gl.getShaderParameter(s, this.gl.COMPILE_STATUS)) {
       this.gl.deleteShader(s)
-      throw new Error('Error compiling shaders: ' + this.gl.getShaderInfoLog(s))
+      console.error('ERROR compiling shaders', this.gl.getShaderInfoLog(s))
     }
 
     return s

@@ -1,4 +1,10 @@
 import { Application, Time, Shader } from 'Engine/Engine'
+import {
+  VertexBuffer,
+  IndexBuffer,
+  BufferLayout,
+  ArrayBuffer,
+} from 'Engine/Buffer'
 
 import FS_SOURCE from 'Assets/Shaders/basic.10.frag'
 import VS_SOURCE from 'Assets/Shaders/basic.10.vert'
@@ -32,56 +38,28 @@ export class Sandbox extends Application {
 
     this.shader = new Shader(this.gl, VS_SOURCE, FS_SOURCE)
     this.shader.bind()
+    const vb = new VertexBuffer(this.gl, vertices)
+    const ib = new IndexBuffer(this.gl, indices)
 
-    const vb = this.gl.createBuffer()
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vb)
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      new Float32Array(vertices),
-      this.gl.STATIC_DRAW
-    )
-
-    const pal = this.gl.getAttribLocation(this.shader.id, 'a_position') // Position Atttribute Location
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vb)
-    this.gl.vertexAttribPointer(
-      pal,
+    const layout = new BufferLayout()
+    layout.push(
       3,
+      'a_position',
       this.gl.FLOAT,
       false,
-      9 * Float32Array.BYTES_PER_ELEMENT,
-      0 * Float32Array.BYTES_PER_ELEMENT
+      Float32Array.BYTES_PER_ELEMENT
     )
-    this.gl.enableVertexAttribArray(pal)
-
-    const ib = this.gl.createBuffer()
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, ib)
-    this.gl.bufferData(
-      this.gl.ELEMENT_ARRAY_BUFFER,
-      new Uint16Array(indices),
-      this.gl.STATIC_DRAW
-    )
-
-    const cal = this.gl.getAttribLocation(this.shader.id, 'a_color') // Color Attribute Location
-    this.gl.vertexAttribPointer(
-      cal,
+    layout.push(
       4,
+      'a_color',
       this.gl.FLOAT,
       false,
-      9 * Float32Array.BYTES_PER_ELEMENT,
-      3 * Float32Array.BYTES_PER_ELEMENT
+      Float32Array.BYTES_PER_ELEMENT
     )
-    this.gl.enableVertexAttribArray(cal)
+    layout.push(2, 'a_uv', this.gl.FLOAT, false, Float32Array.BYTES_PER_ELEMENT)
 
-    const uval = this.gl.getAttribLocation(this.shader.id, 'a_uv') // UV Attribute Location
-    this.gl.vertexAttribPointer(
-      uval,
-      2,
-      this.gl.FLOAT,
-      false,
-      9 * Float32Array.BYTES_PER_ELEMENT,
-      7 * Float32Array.BYTES_PER_ELEMENT
-    )
-    this.gl.enableVertexAttribArray(uval)
+    const ab = new ArrayBuffer(this.gl)
+    ab.addBuffer(this.shader, vb, ib, layout)
 
     this.shader.bind()
   }
