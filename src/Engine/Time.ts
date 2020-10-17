@@ -13,7 +13,7 @@
  *
  * Update method needs to be call on every loop
  * ```ts
- * Time.update()
+ * time.update()
  * ```
  */
 export class Time {

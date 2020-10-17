@@ -1,4 +1,5 @@
-import { Time } from './Time'
+import { Time } from 'Engine/Time'
+import { clamp } from 'Engine/Math'
 type ContextMode = '2d' | 'webgl' | 'webgl2'
 
 /**
@@ -76,8 +77,6 @@ export class Display {
       this.canvas.width = displayWidth
       this.canvas.height = displayHeight
     }
-
-    // console.log('yep')
   }
 
   get width() {
@@ -90,10 +89,10 @@ export class Display {
 
   /**
    * Set resolution scale
-   * @param scale Value from 0 to 1
+   * @param scale Value from 0 to 1. The value clamp at 0.
    */
   setResolution(scale: number): void {
-    this.resolution = scale
+    this.resolution = clamp(scale, 0, scale)
 
     this.resize()
   }

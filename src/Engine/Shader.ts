@@ -15,6 +15,18 @@ export class Shader {
     this.gl.useProgram(this.rendererID)
   }
 
+  setUniform1f(location: string, x: number) {
+    this.gl.uniform1f(this.gl.getUniformLocation(this.rendererID, location), x)
+  }
+
+  setUniform2f(location: string, x: number, y: number) {
+    this.gl.uniform2f(
+      this.gl.getUniformLocation(this.rendererID, location),
+      x,
+      y
+    )
+  }
+
   createShader(vertex: string, fragment: string): WebGLProgram {
     const program = this.gl.createProgram() as WebGLProgram
     const vs = this.compileShader(this.gl.VERTEX_SHADER, vertex)

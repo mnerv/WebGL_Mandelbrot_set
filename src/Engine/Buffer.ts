@@ -17,6 +17,14 @@ export class BufferLayout {
     this.elements = []
   }
 
+  /**
+   * Create a memory layout
+   * @param count Size of the variable
+   * @param name Name of the attribute location
+   * @param type Attribute type
+   * @param normalized
+   * @param bytes byte size of the value
+   */
   push(
     count: number,
     name: string,
