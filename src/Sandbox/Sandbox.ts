@@ -21,15 +21,17 @@ const indices = [
 export class Sandbox extends Application {
   private gl: WebGLRenderingContext
 
-  constructor(parent?: HTMLDivElement) {
+  shader: Shader
+
+  constructor(parent: HTMLDivElement) {
     super(parent)
     this.display.enableAutoResize()
 
     this.gl = this.display.getContext('webgl') as WebGLRenderingContext
     this.gl.clearColor(0.0, 195 / 255, 255 / 255, 1.0)
 
-    let shader = new Shader(this.gl, VS_SOURCE, FS_SOURCE)
-    shader.bind()
+    this.shader = new Shader(this.gl, VS_SOURCE, FS_SOURCE)
+    this.shader.bind()
 
     const vb = this.gl.createBuffer()
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vb)
@@ -39,7 +41,7 @@ export class Sandbox extends Application {
       this.gl.STATIC_DRAW
     )
 
-    const pal = this.gl.getAttribLocation(shader.id, 'a_position') // Position Atttribute Location
+    const pal = this.gl.getAttribLocation(this.shader.id, 'a_position') // Position Atttribute Location
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vb)
     this.gl.vertexAttribPointer(
       pal,
@@ -59,7 +61,7 @@ export class Sandbox extends Application {
       this.gl.STATIC_DRAW
     )
 
-    const cal = this.gl.getAttribLocation(shader.id, 'a_color') // Color Attribute Location
+    const cal = this.gl.getAttribLocation(this.shader.id, 'a_color') // Color Attribute Location
     this.gl.vertexAttribPointer(
       cal,
       4,
@@ -70,7 +72,7 @@ export class Sandbox extends Application {
     )
     this.gl.enableVertexAttribArray(cal)
 
-    const uval = this.gl.getAttribLocation(shader.id, 'a_uv') // UV Attribute Location
+    const uval = this.gl.getAttribLocation(this.shader.id, 'a_uv') // UV Attribute Location
     this.gl.vertexAttribPointer(
       uval,
       2,
@@ -81,13 +83,15 @@ export class Sandbox extends Application {
     )
     this.gl.enableVertexAttribArray(uval)
 
-    shader.bind()
+    this.shader.bind()
   }
 
   update(time: Time): void {}
 
   render(time: Time): void {
     this.gl.clear(this.gl.DEPTH_BUFFER_BIT | this.gl.COLOR_BUFFER_BIT)
+
+    this.shader.bind()
 
     this.gl.drawElements(
       this.gl.TRIANGLES,

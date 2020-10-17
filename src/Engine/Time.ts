@@ -1,3 +1,21 @@
+/**
+ * Keeps track of time since the start of application.
+ *
+ * Getters
+ *
+ * `Total`: Total time since start in ms
+ *
+ * `Elapsed`: Time since last frame in ms
+ *
+ * `STotal`: Total time since start in s
+ *
+ * `SElapsed`: Time since last frame in s
+ *
+ * Update method needs to be call on every loop
+ * ```ts
+ * Time.update()
+ * ```
+ */
 export class Time {
   private current: number = 0
   private previous: number = 0

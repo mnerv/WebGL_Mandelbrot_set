@@ -1,6 +1,9 @@
 import { Time } from './Time'
 type ContextMode = '2d' | 'webgl' | 'webgl2'
 
+/**
+ * Creates Display area for canvas to render in.
+ */
 export class Display {
   parent: HTMLDivElement
   canvas: HTMLCanvasElement

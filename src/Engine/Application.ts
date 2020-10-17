@@ -1,6 +1,26 @@
 import { Display } from 'Engine/Display'
 import { Time } from 'Engine/Time'
 
+/**
+ * The main application. This class needs to be inhert to use.
+ *
+ * Example:
+ * ```ts
+ * class Sandbox extends Application {
+ *  constructor(parent: HTMLDivElement){
+ *    super(parent)
+ *  }
+ *
+ *  update(time: Time): void {
+ *    // Update code here
+ *  }
+ *
+ *  render(time: Time): void {
+ *    // Render code here
+ *  }
+ * }
+ * ```
+ */
 export abstract class Application {
   constructor(parent?: HTMLDivElement) {
     this.display = new Display(parent)
