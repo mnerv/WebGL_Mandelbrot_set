@@ -8,9 +8,8 @@ import {
   ArrayBuffer,
 } from 'Engine/Engine'
 
-import VS_SOURCE from 'Assets/Shaders/basic.10.vert'
-import FS_SOURCE from 'Assets/Shaders/basic.10.frag'
-import MANDELBROT_SOURCE from 'Assets/Shaders/mandelbrot.10.frag'
+import VS_Source from 'Assets/Shaders/basic.10.vert'
+import Mandelbrot_Source from 'Assets/Shaders/mandelbrot.10.frag'
 
 import { Input } from 'Sandbox/Input'
 
@@ -36,11 +35,16 @@ export class Sandbox extends Application {
 
   input: Input
 
-  scale: number = 1
+  position: [number, number] = [0, 0]
+  scale: [number, number] = [1, 1]
+  scaleSpeed: number = 1
+
+  resetTimer: number = 0
+  private ResetTime: number = 2000
 
   constructor(parent: HTMLDivElement) {
     super(parent)
-    this.display.enableAutoResize()
+    this.display.setResolution(0.25)
 
     this.input = new Input()
     this.input.registerKeyEvents()
@@ -49,7 +53,7 @@ export class Sandbox extends Application {
     this.gl = this.display.getContext('webgl') as WebGLRenderingContext
     this.gl.clearColor(0.0, 195 / 255, 255 / 255, 1.0)
 
-    this.shader = new Shader(this.gl, VS_SOURCE, MANDELBROT_SOURCE)
+    this.shader = new Shader(this.gl, VS_Source, Mandelbrot_Source)
     this.shader.bind()
     const vb = new VertexBuffer(this.gl, vertices)
     const ib = new IndexBuffer(this.gl, indices)
@@ -74,18 +78,47 @@ export class Sandbox extends Application {
     const ab = new ArrayBuffer(this.gl)
     ab.addBuffer(this.shader, vb, ib, layout)
 
+    this.shader.setUniform1f('u_radius', 10)
     this.shader.bind()
-    this.gl.viewport(0, 0, this.display.width, this.display.height)
   }
 
   update(time: Time): void {
-    if (this.input.ZoomIn) this.scale += 0.5 * time.SElapsed
-    else if (this.input.ZoomOut) this.scale -= 0.5 * time.SElapsed
+    if (this.input.Left)
+      this.position[0] -= Math.pow(2, this.scale[0]) * 0.5 * time.SElapsed
+    else if (this.input.Right)
+      this.position[0] += Math.pow(2, this.scale[0]) * 0.5 * time.SElapsed
 
-    this.shader.setUniform1f('u_scale', this.scale)
+    if (this.input.Up)
+      this.position[1] += Math.pow(2, this.scale[1]) * 0.5 * time.SElapsed
+    else if (this.input.Down)
+      this.position[1] -= Math.pow(2, this.scale[1]) * 0.5 * time.SElapsed
+
+    if (this.input.ZoomIn) {
+      this.scale[0] -= this.scaleSpeed * time.SElapsed
+      this.scale[1] -= this.scaleSpeed * time.SElapsed
+    } else if (this.input.ZoomOut) {
+      this.scale[0] += this.scaleSpeed * time.SElapsed
+      this.scale[1] += this.scaleSpeed * time.SElapsed
+    }
+
+    if (this.input.Reset) {
+      this.resetTimer += time.Elapsed
+      if (this.resetTimer >= this.ResetTime) {
+        this.position = [0, 0]
+        this.scale = [1, 1]
+        this.resetTimer = 0
+      }
+    } else {
+      this.resetTimer = 0
+    }
+
+    this.shader.setUniform2fv('u_position', this.position)
+    this.shader.setUniform2fv('u_scale', this.scale)
   }
 
   render(time: Time): void {
+    this.gl.viewport(0, 0, this.display.width, this.display.height)
+
     this.gl.clear(this.gl.DEPTH_BUFFER_BIT | this.gl.COLOR_BUFFER_BIT)
 
     this.shader.setUniform2f(

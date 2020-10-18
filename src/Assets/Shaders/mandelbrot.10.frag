@@ -3,7 +3,7 @@ precision mediump float;
 #define PI 3.14159265359
 #define TWO_PI 6.28318530718
 
-const float MAX_ITER = 4096.;
+const float MAX_ITER = 8192.;
 
 varying vec4 v_color;
 varying vec2 v_uv;
@@ -11,10 +11,20 @@ varying vec2 v_uv;
 uniform vec2 u_resolution;
 uniform float u_time;
 
-float mandelbrot(vec2 uv, float max_iter, float radius) {
+uniform vec2 u_position;
+uniform vec2 u_scale;
+
+uniform float u_radius;
+
+uniform vec2 u_c;
+uniform bool u_julia;
+uniform bool u_frac;
+
+float mandelbrot(vec2 _z, vec2 _c, float max_iter, float radius,
+                 bool fractions) {
   float r2 = radius * radius;
-  vec2 z = vec2(0.);
-  vec2 c = uv;
+  vec2 z = _z;
+  vec2 c = _c;
 
   float iterations = 0.;
   for (float i = 0.; i < MAX_ITER; i++) {
@@ -29,26 +39,37 @@ float mandelbrot(vec2 uv, float max_iter, float radius) {
     iterations++;
   }
 
-  return iterations;
-}
+  if (fractions) {
+    float dist = length(z);
+    float frac_iter = (dist - radius) / (r2 - radius);
+    frac_iter = log2(log(dist) / log(radius));
+    iterations -= frac_iter;
+  }
 
-float map(float x, float in_min, float in_max, float out_min, float out_max) {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  return iterations;
 }
 
 void main() {
   vec2 uv = ((v_uv - 0.5) * u_resolution) / u_resolution.y;
 
-  float maxiter = 256.;
+  float maxiter = 256.; // Temp
   vec3 color = vec3(0.);
 
-  float n = mandelbrot(uv * 3.2, maxiter, 2.);
+  vec2 scale = vec2(pow(2., u_scale.x), pow(2., u_scale.y));
+
+  float n = 0.;
+
+  if (u_julia)
+    n = mandelbrot(uv * scale + u_position, u_c, maxiter, u_radius, !u_frac);
+  else
+    n = mandelbrot(vec2(0.), uv * scale + u_position, maxiter, u_radius,
+                   !u_frac);
 
   if (n < maxiter) {
-    float c = map(n, 0., 90., 0., 1.);
+    float c = sqrt(n / maxiter);
     c = clamp(c, 0., 1.);
 
-    color = vec3(c);
+    color = sin(vec3(0.25, 0.41, 0.6) * c * 50.) * 0.5 + 0.5;
   } else
     color = vec3(0.);
 

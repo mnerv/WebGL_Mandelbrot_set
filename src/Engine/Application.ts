@@ -57,6 +57,8 @@ export abstract class Application {
     this.time.update()
 
     this.update(this.time)
+
+    this.display.resize()
     this.render(this.time)
 
     this.animationID = requestAnimationFrame(this.run.bind(this))

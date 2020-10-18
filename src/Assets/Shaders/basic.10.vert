@@ -9,7 +9,6 @@ varying vec2 v_uv;
 
 uniform vec2 u_resolution;
 uniform float u_time;
-uniform float u_scale;
 
 void main() {
   v_color = a_color;
@@ -17,5 +16,5 @@ void main() {
 
   vec3 pos = a_position + vec3(2., 0., 0.);
 
-  gl_Position = vec4(a_position * u_scale, 1.0);
+  gl_Position = vec4(a_position, 1.0);
 }

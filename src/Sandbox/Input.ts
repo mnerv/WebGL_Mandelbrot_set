@@ -14,6 +14,8 @@ export class Input {
 
   private _left_button: boolean = false
 
+  private _reset: boolean = false
+
   private _x: number = 0
   private _y: number = 0
 
@@ -61,6 +63,10 @@ export class Input {
 
   get LeftButton(): boolean {
     return this._left_button
+  }
+
+  get Reset(): boolean {
+    return this._reset
   }
 
   get X(): number {
@@ -130,10 +136,12 @@ export class Input {
         this._down = state
         break
 
+      case 'KeyF':
       case 'KeyZ':
       case 'ShiftLeft':
         this._zoom_in = state
         break
+      case 'KeyG':
       case 'KeyX':
       case 'ControlLeft':
         this._zoom_out = state
@@ -149,6 +157,11 @@ export class Input {
       case 'Space':
         this._space = state
         break
+
+      case 'Digit0':
+        this._reset = state
+        break
+
       default:
         break
     }

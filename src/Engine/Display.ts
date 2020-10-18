@@ -10,7 +10,6 @@ export class Display {
   canvas: HTMLCanvasElement
 
   private resolution: number = 1.0
-  private autoResize: boolean = false
 
   /**
    * Create display area.
@@ -34,20 +33,6 @@ export class Display {
 
     this.setFill()
     this.resize()
-  }
-
-  enableAutoResize() {
-    addEventListener('resize', this.resize.bind(this))
-    this.autoResize = true
-  }
-
-  disableAutoResize() {
-    removeEventListener('resize', this.resize.bind(this))
-    this.autoResize = false
-  }
-
-  isAutoResizeEnabled() {
-    return this.autoResize
   }
 
   setFill() {

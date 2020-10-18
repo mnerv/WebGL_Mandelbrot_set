@@ -27,6 +27,13 @@ export class Shader {
     )
   }
 
+  setUniform2fv(location: string, vector: [number, number]) {
+    this.gl.uniform2fv(
+      this.gl.getUniformLocation(this.rendererID, location),
+      vector
+    )
+  }
+
   createShader(vertex: string, fragment: string): WebGLProgram {
     const program = this.gl.createProgram() as WebGLProgram
     const vs = this.compileShader(this.gl.VERTEX_SHADER, vertex)
