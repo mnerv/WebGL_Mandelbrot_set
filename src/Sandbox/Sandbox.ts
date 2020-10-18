@@ -8,8 +8,9 @@ import {
   ArrayBuffer,
 } from 'Engine/Engine'
 
-import FS_SOURCE from 'Assets/Shaders/basic.10.frag'
 import VS_SOURCE from 'Assets/Shaders/basic.10.vert'
+import FS_SOURCE from 'Assets/Shaders/basic.10.frag'
+import MANDELBROT_SOURCE from 'Assets/Shaders/mandelbrot.10.frag'
 
 import { Input } from 'Sandbox/Input'
 
@@ -48,7 +49,7 @@ export class Sandbox extends Application {
     this.gl = this.display.getContext('webgl') as WebGLRenderingContext
     this.gl.clearColor(0.0, 195 / 255, 255 / 255, 1.0)
 
-    this.shader = new Shader(this.gl, VS_SOURCE, FS_SOURCE)
+    this.shader = new Shader(this.gl, VS_SOURCE, MANDELBROT_SOURCE)
     this.shader.bind()
     const vb = new VertexBuffer(this.gl, vertices)
     const ib = new IndexBuffer(this.gl, indices)
@@ -78,8 +79,8 @@ export class Sandbox extends Application {
   }
 
   update(time: Time): void {
-    if (this.input.ZoomIn) this.scale += 0.1 * time.SElapsed
-    else if (this.input.ZoomOut) this.scale -= 0.1 * time.SElapsed
+    if (this.input.ZoomIn) this.scale += 0.5 * time.SElapsed
+    else if (this.input.ZoomOut) this.scale -= 0.5 * time.SElapsed
 
     this.shader.setUniform1f('u_scale', this.scale)
   }
