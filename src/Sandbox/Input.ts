@@ -20,6 +20,9 @@ export class Input {
   private _reset_rotation: boolean = false
   private _reset_scale: boolean = false
 
+  private _start_x: number = 0
+  private _start_y: number = 0
+
   private _x: number = 0
   private _y: number = 0
 
@@ -28,6 +31,8 @@ export class Input {
 
   private _wheel_delta_x: number = 0
   private _wheel_delta_y: number = 0
+
+  private _is_rolling: boolean = false
 
   get Left(): boolean {
     return this._left
@@ -97,6 +102,22 @@ export class Input {
     return this._y
   }
 
+  get sX(): number {
+    return this._start_x
+  }
+
+  set sX(value: number) {
+    this._start_x = value
+  }
+
+  get sY(): number {
+    return this._start_y
+  }
+
+  set sY(value: number) {
+    this._start_y = value
+  }
+
   get dX(): number {
     return this._x - this._prev_x
   }
@@ -111,6 +132,14 @@ export class Input {
 
   get WheelDX(): number {
     return this._wheel_delta_x
+  }
+
+  get IsRolling(): boolean {
+    return this._is_rolling
+  }
+
+  set IsRolling(value: boolean) {
+    this._is_rolling = value
   }
 
   registerMouseEvents() {
@@ -201,7 +230,11 @@ export class Input {
   }
 
   private onMouseDown(event: MouseEvent) {
-    if (event.button == 0) this._left_button = true
+    if (event.button == 0) {
+      this._left_button = true
+      this._start_x = event.clientX
+      this._start_x = event.clientY
+    }
   }
 
   private onMouseMove(event: MouseEvent) {
@@ -217,8 +250,10 @@ export class Input {
   }
 
   private onWheel(event: WheelEvent) {
+    event.preventDefault()
     this._wheel_delta_y = event.deltaY
     this._wheel_delta_x = event.deltaX
+    this._is_rolling = true
   }
 
   private onKeyDown(event: KeyboardEvent) {

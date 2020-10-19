@@ -23,8 +23,12 @@ export class MandelbrotProps {
 
   direction: [number, number] = [0, 0] // x, y
 
-  private get move_step(): number {
+  private get move_step_x(): number {
     return Math.pow(2, this.scale[0]) * 0.5
+  }
+
+  private get move_step_y(): number {
+    return Math.pow(2, this.scale[1]) * 0.5
   }
 
   update(time: Time) {
@@ -32,12 +36,12 @@ export class MandelbrotProps {
     const c = Math.cos(this.rotation)
 
     this.position[0] +=
-      (this.move_step * this.direction[0] * c -
-        this.move_step * this.direction[1] * s) *
+      (this.move_step_x * this.direction[0] * c -
+        this.move_step_x * this.direction[1] * s) *
       time.SElapsed
     this.position[1] +=
-      (this.move_step * this.direction[0] * s +
-        this.move_step * this.direction[1] * c) *
+      (this.move_step_y * this.direction[0] * s +
+        this.move_step_y * this.direction[1] * c) *
       time.SElapsed
 
     this.realScale[0] =

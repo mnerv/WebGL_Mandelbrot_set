@@ -82,6 +82,8 @@ export class Sandbox extends Application {
     this.mandelbrotProp = new MandelbrotProps()
 
     this.shader.setUniform1f('u_radius', this.mandelbrotProp.radius)
+    // this.shader.setUniform1i('u_julia', 1)
+    // this.shader.setUniform2f('u_c')
     this.shader.bind()
   }
 
@@ -104,6 +106,13 @@ export class Sandbox extends Application {
     } else if (this.input.ZoomOut) {
       this.mandelbrotProp.scale[0] += this.scaleSpeed * time.SElapsed
       this.mandelbrotProp.scale[1] += this.scaleSpeed * time.SElapsed
+    } else if (this.input.IsRolling) {
+      this.mandelbrotProp.scale[0] +=
+        this.scaleSpeed * -this.input.WheelDY * 0.25 * time.SElapsed
+      this.mandelbrotProp.scale[1] +=
+        this.scaleSpeed * -this.input.WheelDY * 0.25 * time.SElapsed
+
+      this.input.IsRolling = !this.input.IsRolling
     }
 
     if (this.input.RotateAnti) {
@@ -114,28 +123,24 @@ export class Sandbox extends Application {
 
     if (this.input.Reset) {
       this.resetTimer += time.Elapsed
-
       if (this.resetTimer >= this.ResetTime) {
-        if (this.input.ResetPosition) {
-          this.mandelbrotProp.resetPosition()
-        } else if (this.input.ResetRotation) {
-          this.mandelbrotProp.resetRotation()
-        } else if (this.input.ResetScale) {
-          this.mandelbrotProp.resetZoom()
-        } else {
-          this.mandelbrotProp.reset()
-        }
-
-        this.resetTimer = 0
+        if (this.input.ResetPosition) this.mandelbrotProp.resetPosition()
+        if (this.input.ResetRotation) this.mandelbrotProp.resetRotation()
+        if (this.input.ResetScale) this.mandelbrotProp.resetZoom()
+        if (this.input.ResetAll) this.mandelbrotProp.reset()
       }
     } else {
       this.resetTimer = 0
+    }
+
+    if (this.input.LeftButton) {
     }
 
     this.mandelbrotProp.update(time)
 
     this.shader.setUniform2fv('u_scale', this.mandelbrotProp.realScale)
     this.shader.setUniform2fv('u_position', this.mandelbrotProp.realPosition)
+    // this.shader.setUniform2fv('u_c', this.mandelbrotProp.realPosition)
     this.shader.setUniform1f('u_rotation', this.mandelbrotProp.realRotation)
   }
 

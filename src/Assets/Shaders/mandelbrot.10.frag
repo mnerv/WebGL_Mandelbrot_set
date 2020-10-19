@@ -71,7 +71,8 @@ void main() {
   float n = 0.;
 
   if (u_julia)
-    n = mandelbrot(uv * scale + u_position, u_c, maxiter, u_radius, !u_frac);
+    n = mandelbrot(rot2D(uv * scale + u_position, u_position, u_rotation), u_c,
+                   maxiter, u_radius, !u_frac);
   else
     n = mandelbrot(u_z, rot2D(uv * scale + u_position, u_position, u_rotation),
                    maxiter, u_radius, !u_frac);
