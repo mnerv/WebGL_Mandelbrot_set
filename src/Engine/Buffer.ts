@@ -1,11 +1,11 @@
 import { Shader } from 'Engine/Engine'
 
-class BufferElement {
-  name!: string
-  type!: number
-  count!: number
-  normalized!: boolean
-  offset!: number
+interface BufferElement {
+  name: string
+  type: number
+  count: number
+  normalized: boolean
+  offset: number
 }
 
 export class BufferLayout {

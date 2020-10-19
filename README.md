@@ -12,6 +12,14 @@ Mandelbrot set in WebGL!
 
 **x**/**g**/**control** to zoom out
 
+**7** Reset position to 0,0
+
+**8** Reset rotation to 0
+
+**9** Reset scale to 1,1
+
+**0** Reset all
+
 ## Math
 
 ### Complex number

@@ -1,5 +1,6 @@
 import { Time } from 'Engine/Time'
 import { clamp } from 'Engine/Math'
+
 type ContextMode = '2d' | 'webgl' | 'webgl2'
 
 /**

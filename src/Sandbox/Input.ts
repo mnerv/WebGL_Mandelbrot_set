@@ -15,6 +15,10 @@ export class Input {
   private _left_button: boolean = false
 
   private _reset: boolean = false
+  private _reset_all: boolean = false
+  private _reset_position: boolean = false
+  private _reset_rotation: boolean = false
+  private _reset_scale: boolean = false
 
   private _x: number = 0
   private _y: number = 0
@@ -67,6 +71,22 @@ export class Input {
 
   get Reset(): boolean {
     return this._reset
+  }
+
+  get ResetAll(): boolean {
+    return this._reset_all
+  }
+
+  get ResetPosition(): boolean {
+    return this._reset_position
+  }
+
+  get ResetRotation(): boolean {
+    return this._reset_rotation
+  }
+
+  get ResetScale(): boolean {
+    return this._reset_scale
   }
 
   get X(): number {
@@ -160,6 +180,19 @@ export class Input {
 
       case 'Digit0':
         this._reset = state
+        this._reset_all = state
+        break
+      case 'Digit7':
+        this._reset = state
+        this._reset_position = state
+        break
+      case 'Digit8':
+        this._reset = state
+        this._reset_rotation = state
+        break
+      case 'Digit9':
+        this._reset = state
+        this._reset_scale = state
         break
 
       default:

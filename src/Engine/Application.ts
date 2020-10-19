@@ -4,11 +4,13 @@ import { Time } from 'Engine/Time'
 /**
  * The main application. This class needs to be inhert to use.
  *
+ * The `parent` parameter can be use to pass in the the parent element.
+ *
  * Example:
  * ```ts
  * class Sandbox extends Application {
- *  constructor(parent: HTMLDivElement){
- *    super(parent)
+ *  constructor(){
+ *    super()
  *  }
  *
  *  update(time: Time): void {
@@ -19,6 +21,9 @@ import { Time } from 'Engine/Time'
  *    // Render code here
  *  }
  * }
+ *
+ * const sandbox = new Sandbox()
+ * sanbox.start()
  * ```
  */
 export abstract class Application {
@@ -27,12 +32,18 @@ export abstract class Application {
     this.time = new Time()
   }
 
+  /**
+   * Start the Application's main loop
+   */
   start(): Application {
     this.run()
     return this
   }
 
-  close(): boolean {
+  /**
+   * Stop the application
+   */
+  stop(): boolean {
     cancelAnimationFrame(this.animationID)
     this.animationID = -1
     return true
@@ -42,8 +53,16 @@ export abstract class Application {
     return this
   }
 
+  /**
+   * update is called every frame
+   * @param time Time object
+   */
   abstract update(time: Time): void
 
+  /**
+   * render is called every frame
+   * @param time Time object
+   */
   abstract render(time: Time): void
 
   protected display: Display
@@ -53,6 +72,9 @@ export abstract class Application {
 
   private time: Time
 
+  /**
+   * Application main loop
+   */
   private run(): void {
     this.time.update()
 

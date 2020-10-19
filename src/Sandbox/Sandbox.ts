@@ -1,3 +1,4 @@
+import { MandelbrotProps } from 'Sandbox/Props'
 import {
   Application,
   Time,
@@ -35,12 +36,12 @@ export class Sandbox extends Application {
 
   input: Input
 
-  position: [number, number] = [0, 0]
-  scale: [number, number] = [1, 1]
   scaleSpeed: number = 1
 
   resetTimer: number = 0
-  private ResetTime: number = 2000
+  private ResetTime: number = 2000 // ms
+
+  private mandelbrotProp: MandelbrotProps
 
   constructor(parent: HTMLDivElement) {
     super(parent)
@@ -78,42 +79,64 @@ export class Sandbox extends Application {
     const ab = new ArrayBuffer(this.gl)
     ab.addBuffer(this.shader, vb, ib, layout)
 
-    this.shader.setUniform1f('u_radius', 10)
+    this.mandelbrotProp = new MandelbrotProps()
+
+    this.shader.setUniform1f('u_radius', this.mandelbrotProp.radius)
     this.shader.bind()
   }
 
   update(time: Time): void {
-    if (this.input.Left)
-      this.position[0] -= Math.pow(2, this.scale[0]) * 0.5 * time.SElapsed
-    else if (this.input.Right)
-      this.position[0] += Math.pow(2, this.scale[0]) * 0.5 * time.SElapsed
+    if (this.input.Left) this.mandelbrotProp.moveLeft()
+    else if (this.input.Right) this.mandelbrotProp.moveRight()
+    else {
+      this.mandelbrotProp.stopLeftRight()
+    }
 
-    if (this.input.Up)
-      this.position[1] += Math.pow(2, this.scale[1]) * 0.5 * time.SElapsed
-    else if (this.input.Down)
-      this.position[1] -= Math.pow(2, this.scale[1]) * 0.5 * time.SElapsed
+    if (this.input.Up) this.mandelbrotProp.moveUp()
+    else if (this.input.Down) this.mandelbrotProp.moveDown()
+    else {
+      this.mandelbrotProp.stopUpDown()
+    }
 
     if (this.input.ZoomIn) {
-      this.scale[0] -= this.scaleSpeed * time.SElapsed
-      this.scale[1] -= this.scaleSpeed * time.SElapsed
+      this.mandelbrotProp.scale[0] -= this.scaleSpeed * time.SElapsed
+      this.mandelbrotProp.scale[1] -= this.scaleSpeed * time.SElapsed
     } else if (this.input.ZoomOut) {
-      this.scale[0] += this.scaleSpeed * time.SElapsed
-      this.scale[1] += this.scaleSpeed * time.SElapsed
+      this.mandelbrotProp.scale[0] += this.scaleSpeed * time.SElapsed
+      this.mandelbrotProp.scale[1] += this.scaleSpeed * time.SElapsed
+    }
+
+    if (this.input.RotateAnti) {
+      this.mandelbrotProp.rotation -= Math.PI / 60
+    } else if (this.input.RotateClock) {
+      this.mandelbrotProp.rotation += Math.PI / 60
     }
 
     if (this.input.Reset) {
       this.resetTimer += time.Elapsed
+
       if (this.resetTimer >= this.ResetTime) {
-        this.position = [0, 0]
-        this.scale = [1, 1]
+        if (this.input.ResetPosition) {
+          this.mandelbrotProp.resetPosition()
+        } else if (this.input.ResetRotation) {
+          this.mandelbrotProp.resetRotation()
+        } else if (this.input.ResetScale) {
+          this.mandelbrotProp.resetZoom()
+        } else {
+          this.mandelbrotProp.reset()
+        }
+
         this.resetTimer = 0
       }
     } else {
       this.resetTimer = 0
     }
 
-    this.shader.setUniform2fv('u_position', this.position)
-    this.shader.setUniform2fv('u_scale', this.scale)
+    this.mandelbrotProp.update(time)
+
+    this.shader.setUniform2fv('u_scale', this.mandelbrotProp.realScale)
+    this.shader.setUniform2fv('u_position', this.mandelbrotProp.realPosition)
+    this.shader.setUniform1f('u_rotation', this.mandelbrotProp.realRotation)
   }
 
   render(time: Time): void {

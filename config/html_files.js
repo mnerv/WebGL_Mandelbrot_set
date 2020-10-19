@@ -2,7 +2,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const ROOT_DIR = path.join(__dirname, '..')
-const PUBLIC_DIR = path.join(ROOT_DIR, 'public')
+const PUBLIC_DIR = path.resolve(ROOT_DIR, 'public')
 
 module.exports = [
   new HtmlWebpackPlugin({

@@ -2,7 +2,7 @@
  * Linear interpolation
  * @param a Value a, number
  * @param b Value b, number
- * @param n Input value, number
+ * @param n Interpolation factor
  * @return Interpolated value between a and b
  */
 export function lerp(a: number, b: number, n: number): number {

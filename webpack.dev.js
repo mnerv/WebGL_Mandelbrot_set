@@ -61,20 +61,10 @@ const modules = {
     {
       test: /\.s[ac]ss$/i,
       use: [
-        'style-loader', // Creates `style` nodes from JS strings
+        // 'style-loader', // Creates `style` nodes from JS strings
         MiniCssExtractPlugin.loader,
-        {
-          loader: 'css-loader', // Translates CSS into CommonJS
-          options: {
-            sourceMap: true,
-          },
-        },
-        {
-          loader: 'sass-loader', // Compiles Sass to CSS
-          options: {
-            sourceMap: true,
-          },
-        },
+        'css-loader',
+        'sass-loader',
       ],
     },
   ],

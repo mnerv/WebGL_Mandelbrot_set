@@ -13,12 +13,23 @@ uniform float u_time;
 
 uniform vec2 u_position;
 uniform vec2 u_scale;
+uniform float u_rotation;
 
 uniform float u_radius;
 
+uniform vec2 u_z;
 uniform vec2 u_c;
 uniform bool u_julia;
 uniform bool u_frac;
+
+vec2 rot2D(vec2 p, vec2 pivot, float a) {
+  float s = sin(a);
+  float c = cos(a);
+  p -= pivot;
+  p = vec2(p.x * c - p.y * s, p.x * s + p.y * c);
+  p += pivot;
+  return p;
+}
 
 float mandelbrot(vec2 _z, vec2 _c, float max_iter, float radius,
                  bool fractions) {
@@ -62,8 +73,8 @@ void main() {
   if (u_julia)
     n = mandelbrot(uv * scale + u_position, u_c, maxiter, u_radius, !u_frac);
   else
-    n = mandelbrot(vec2(0.), uv * scale + u_position, maxiter, u_radius,
-                   !u_frac);
+    n = mandelbrot(u_z, rot2D(uv * scale + u_position, u_position, u_rotation),
+                   maxiter, u_radius, !u_frac);
 
   if (n < maxiter) {
     float c = sqrt(n / maxiter);
