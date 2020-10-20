@@ -11,6 +11,7 @@ import {
 
 import VS_Source from 'Assets/Shaders/basic.10.vert'
 import Mandelbrot_Source from 'Assets/Shaders/mandelbrot.10.frag'
+import Color_Source from 'Assets/Shaders/color.10.frag'
 
 import { Input } from 'Sandbox/Input'
 
@@ -45,11 +46,13 @@ export class Sandbox extends Application {
 
   constructor(parent: HTMLDivElement) {
     super(parent)
-    this.display.setResolution(0.25)
+    this.display.setResolution(1 / 2)
 
     this.input = new Input()
+
     this.input.registerKeyEvents()
-    this.input.registerMouseEvents()
+    this.input.registerTouchEvents(this.display.canvas)
+    this.input.registerMouseEvents(this.display.canvas)
 
     this.gl = this.display.getContext('webgl') as WebGLRenderingContext
     this.gl.clearColor(0.0, 195 / 255, 255 / 255, 1.0)
@@ -81,9 +84,11 @@ export class Sandbox extends Application {
 
     this.mandelbrotProp = new MandelbrotProps()
 
+    this.mandelbrotProp.radius = 2
     this.shader.setUniform1f('u_radius', this.mandelbrotProp.radius)
+    this.shader.setUniform1i('u_frac', 1)
     // this.shader.setUniform1i('u_julia', 1)
-    // this.shader.setUniform2f('u_c')
+    // this.shader.setUniform2fv('u_c', [-0.4, 0.6])
     this.shader.bind()
   }
 
@@ -133,9 +138,15 @@ export class Sandbox extends Application {
       this.resetTimer = 0
     }
 
-    if (this.input.LeftButton) {
+    if (this.input.IsDragging) {
+      this.mandelbrotProp.drag(
+        (this.input.dX / this.display.displayWidthPixelRatio) *
+          this.display.ratio,
+        this.input.dY / this.display.displayHeightPixelRatio
+      )
     }
 
+    this.input.update()
     this.mandelbrotProp.update(time)
 
     this.shader.setUniform2fv('u_scale', this.mandelbrotProp.realScale)

@@ -73,10 +73,11 @@ const modules = {
 const resolve = {
   extensions: ['.ts', '.js'],
   alias: {
-    src: path.resolve(__dirname, 'src/'),
-    Assets: path.resolve(__dirname, 'src/Assets/'),
-    Engine: path.resolve(__dirname, 'src/Engine/'),
-    Sandbox: path.resolve(__dirname, 'src/Sandbox/'),
+    src: path.resolve(__dirname, 'src'),
+    Assets: path.resolve(__dirname, 'src/Assets'),
+    DOM: path.resolve(__dirname, 'src/DOM'),
+    Engine: path.resolve(__dirname, 'src/Engine'),
+    Sandbox: path.resolve(__dirname, 'src/Sandbox'),
   },
 }
 

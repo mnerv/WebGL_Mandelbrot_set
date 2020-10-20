@@ -8,9 +8,9 @@ Mandelbrot set in WebGL!
 
 **q** and **e** to rotate
 
-**z**/**f**/**shift** to zoom in
+**z**/**shift** to zoom in
 
-**x**/**g**/**control** to zoom out
+**x**/**control** to zoom out
 
 **7** Reset position to 0,0
 

@@ -1,18 +1,22 @@
 import { lerp } from 'Engine/Math'
 import { Time } from 'Engine/Time'
-import { Template } from 'webpack'
+import { Slider } from 'DOM/Slider'
 
 type Axis = 'x' | 'y'
 
+type vec2 = [number, number]
+
 export class MandelbrotProps {
-  NAV_SPEED: number = 1
-  SMOOTH_STEP: number = 0.03
+  SPEED_DEFAULT: number = 1
+  SMOOTH_STEP_DEFAULT: number = 0.03
+  SCALE_DEFAULT: vec2 = [2, 2]
+  POSITION_DEFAULT: vec2 = [0, 0]
 
-  position: [number, number] = [0, 0]
-  realPosition: [number, number] = [...this.position]
+  position: vec2 = [...this.POSITION_DEFAULT]
+  realPosition: vec2 = [...this.position]
 
-  scale: [number, number] = [1, 1]
-  realScale: [number, number] = [...this.scale]
+  scale: vec2 = [...this.SCALE_DEFAULT]
+  realScale: vec2 = [...this.scale]
 
   rotation: number = 0
   realRotation: number = 0
@@ -21,7 +25,11 @@ export class MandelbrotProps {
 
   resetMode: boolean = false
 
-  direction: [number, number] = [0, 0] // x, y
+  direction: vec2 = [0, 0] // x, y
+
+  smooth_step: number = this.SMOOTH_STEP_DEFAULT
+
+  offset: vec2 = [0, 0]
 
   private get move_step_x(): number {
     return Math.pow(2, this.scale[0]) * 0.5
@@ -29,6 +37,13 @@ export class MandelbrotProps {
 
   private get move_step_y(): number {
     return Math.pow(2, this.scale[1]) * 0.5
+  }
+
+  // slider: Slider
+
+  constructor() {
+    // this.slider = new Slider(document.body)
+    // this.slider.sliderTitle = 'R: '
   }
 
   update(time: Time) {
@@ -45,22 +60,37 @@ export class MandelbrotProps {
       time.SElapsed
 
     this.realScale[0] =
-      lerp(this.realScale[0], this.scale[0], this.SMOOTH_STEP) +
+      lerp(this.realScale[0], this.scale[0], this.smooth_step) +
       (this.scale[0] - this.realScale[0]) * time.SElapsed
     this.realScale[1] =
-      lerp(this.realScale[1], this.scale[1], this.SMOOTH_STEP) +
+      lerp(this.realScale[1], this.scale[1], this.smooth_step) +
       (this.scale[1] - this.realScale[1]) * time.SElapsed
 
     this.realRotation =
-      lerp(this.realRotation, this.rotation, this.SMOOTH_STEP) +
+      lerp(this.realRotation, this.rotation, this.smooth_step) +
       (this.rotation - this.realRotation) * time.SElapsed
 
     this.realPosition[0] =
-      lerp(this.realPosition[0], this.position[0], this.SMOOTH_STEP) +
+      lerp(this.realPosition[0], this.position[0], this.smooth_step) +
       (this.position[0] - this.realPosition[0]) * time.SElapsed
     this.realPosition[1] =
-      lerp(this.realPosition[1], this.position[1], this.SMOOTH_STEP) +
+      lerp(this.realPosition[1], this.position[1], this.smooth_step) +
       (this.position[1] - this.realPosition[1]) * time.SElapsed
+  }
+
+  drag(dx: number, dy: number) {
+    // const s = Math.sin(this.rotation)
+    // const c = Math.cos(this.rotation)
+
+    this.realPosition[0] -= dx * Math.pow(2, this.scale[0])
+    this.realPosition[1] += dy * Math.pow(2, this.scale[1])
+
+    // this.realPosition[0] -=
+    //   dx * Math.pow(2, this.scale[0]) * c - dy * Math.pow(2, this.scale[1]) * s
+    // this.realPosition[1] +=
+    //   dx * Math.pow(2, this.scale[0]) * s + dy * Math.pow(2, this.scale[1]) * c
+
+    this.position = [...this.realPosition]
   }
 
   moveLeft() {
@@ -94,7 +124,7 @@ export class MandelbrotProps {
   }
 
   resetPosition() {
-    this.position = [0, 0]
+    this.position = [...this.POSITION_DEFAULT]
   }
 
   resetRotation() {
@@ -102,6 +132,6 @@ export class MandelbrotProps {
   }
 
   resetZoom() {
-    this.scale = [1, 1]
+    this.scale = [...this.SCALE_DEFAULT]
   }
 }

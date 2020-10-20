@@ -13,6 +13,7 @@ export class Input {
   protected _space: boolean = false
 
   private _left_button: boolean = false
+  private _is_dragging: boolean = false
 
   private _reset: boolean = false
   private _reset_all: boolean = false
@@ -72,6 +73,10 @@ export class Input {
 
   get LeftButton(): boolean {
     return this._left_button
+  }
+
+  get IsDragging(): boolean {
+    return this._is_dragging
   }
 
   get Reset(): boolean {
@@ -142,12 +147,21 @@ export class Input {
     this._is_rolling = value
   }
 
-  registerMouseEvents() {
-    addEventListener('mousedown', this.onMouseDown.bind(this))
-    addEventListener('mousemove', this.onMouseMove.bind(this))
-    addEventListener('mouseup', this.onMouseUp.bind(this))
+  registerMouseEvents(element: HTMLElement) {
+    element.addEventListener('mousedown', this.onMouseDown.bind(this))
+    element.addEventListener('mousemove', this.onMouseMove.bind(this))
+    element.addEventListener('mouseup', this.onMouseUp.bind(this))
 
-    addEventListener('wheel', this.onWheel.bind(this))
+    element.addEventListener('wheel', this.onWheel.bind(this))
+
+    addEventListener('focus', this.onFocus.bind(this))
+    addEventListener('blur', this.onBlur.bind(this))
+  }
+
+  registerTouchEvents(element: HTMLElement) {
+    element.addEventListener('touchstart', this.onTouchStart.bind(this))
+    element.addEventListener('touchmove', this.onTouchMove.bind(this))
+    element.addEventListener('touchend', this.onTouchEnd.bind(this))
   }
 
   registerKeyEvents() {
@@ -164,6 +178,11 @@ export class Input {
   removeKeyEvents() {
     removeEventListener('keydown', this.onKeyDown.bind(this))
     removeEventListener('keyup', this.onKeyUp.bind(this))
+  }
+
+  update() {
+    this._prev_x = this._x
+    this._prev_y = this._y
   }
 
   private updateKey(code: string, state: boolean) {
@@ -185,12 +204,10 @@ export class Input {
         this._down = state
         break
 
-      case 'KeyF':
       case 'KeyZ':
       case 'ShiftLeft':
         this._zoom_in = state
         break
-      case 'KeyG':
       case 'KeyX':
       case 'ControlLeft':
         this._zoom_out = state
@@ -232,21 +249,62 @@ export class Input {
   private onMouseDown(event: MouseEvent) {
     if (event.button == 0) {
       this._left_button = true
-      this._start_x = event.clientX
-      this._start_x = event.clientY
+      this._is_dragging = true
+      this._prev_x = event.clientX * devicePixelRatio
+      this._prev_y = event.clientY * devicePixelRatio
+      this._x = this._prev_x
+      this._y = this._prev_y
     }
   }
 
   private onMouseMove(event: MouseEvent) {
-    this._prev_x = this._x
-    this._prev_y = this._y
-
-    this._x = event.clientX
-    this._y = event.clientY
+    this._x = event.clientX * devicePixelRatio
+    this._y = event.clientY * devicePixelRatio
   }
 
   private onMouseUp(event: MouseEvent) {
-    if (event.button == 0) this._left_button = false
+    if (event.button == 0) {
+      this._left_button = false
+      this._is_dragging = false
+    }
+  }
+
+  private onTouchStart(event: TouchEvent) {
+    event.preventDefault()
+    if (event.touches.length == 1) {
+      this._left_button = true
+      this._is_dragging = true
+
+      this._prev_x = event.touches[0].clientX * devicePixelRatio
+      this._prev_y = event.touches[0].clientY * devicePixelRatio
+      this._x = this._prev_x
+      this._y = this._prev_x
+    }
+    // this._is_dragging = true
+  }
+
+  private onTouchMove(event: TouchEvent) {
+    event.preventDefault()
+    if (event.touches.length == 1) {
+      this._left_button = true
+      this._is_dragging = true
+
+      this._x = event.touches[0].clientX * devicePixelRatio
+      this._y = event.touches[0].clientY * devicePixelRatio
+    }
+  }
+
+  private onTouchEnd(event: TouchEvent) {
+    event.preventDefault()
+
+    if (event.touches.length == 1) {
+      this._left_button = false
+      this._is_dragging = false
+
+      this._x = event.touches[0].clientX * devicePixelRatio
+      this._y = event.touches[0].clientY * devicePixelRatio
+    }
+    // this._is_dragging = false
   }
 
   private onWheel(event: WheelEvent) {
@@ -262,5 +320,20 @@ export class Input {
 
   private onKeyUp(event: KeyboardEvent) {
     this.updateKey(event.code, false)
+  }
+
+  private onFocus(event: FocusEvent) {}
+
+  private onBlur(event: FocusEvent) {
+    this._left = false
+    this._right = false
+    this._up = false
+    this._down = false
+
+    this._zoom_in = false
+    this._zoom_out = false
+
+    this._rotate_anti = false
+    this._rotate_clock = false
   }
 }

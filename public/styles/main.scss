@@ -2,6 +2,8 @@ html,
 body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
+  padding: 0;
+
   height: 100%;
   overflow: hidden;
 }
@@ -13,9 +15,16 @@ body {
 
 #app,
 #Display {
-  display: block;
-  margin: auto;
   height: 100%;
+  width: 100%;
+}
+
+#DisplayRenderer {
+  cursor: grab;
+}
+
+#DisplayRenderer:active {
+  cursor: move;
 }
 
 canvas {
@@ -23,4 +32,14 @@ canvas {
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }

@@ -17,6 +17,7 @@
       "Engine/*": ["src/Engine/*"],
       "Sandbox/*": ["src/Sandbox/*"],
       "Assets/*": ["src/Assets/*"],
+      "DOM/*": ["src/DOM/*"],
     }
   }
 }

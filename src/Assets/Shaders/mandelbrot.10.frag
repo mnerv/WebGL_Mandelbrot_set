@@ -1,4 +1,8 @@
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
 precision mediump float;
+#endif
 
 #define PI 3.14159265359
 #define TWO_PI 6.28318530718
@@ -22,13 +26,21 @@ uniform vec2 u_c;
 uniform bool u_julia;
 uniform bool u_frac;
 
-vec2 rot2D(vec2 p, vec2 pivot, float a) {
+vec2 rot_2d(vec2 p, vec2 pivot, float a) {
   float s = sin(a);
   float c = cos(a);
   p -= pivot;
   p = vec2(p.x * c - p.y * s, p.x * s + p.y * c);
   p += pivot;
   return p;
+}
+
+float map(float x, float in_min, float in_max, float out_min, float out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+int map(int x, int in_min, int in_max, int out_min, int out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 float mandelbrot(vec2 _z, vec2 _c, float max_iter, float radius,
@@ -63,7 +75,7 @@ float mandelbrot(vec2 _z, vec2 _c, float max_iter, float radius,
 void main() {
   vec2 uv = ((v_uv - 0.5) * u_resolution) / u_resolution.y;
 
-  float maxiter = 256.; // Temp
+  float max_iter = 256.; // Temp
   vec3 color = vec3(0.);
 
   vec2 scale = vec2(pow(2., u_scale.x), pow(2., u_scale.y));
@@ -71,17 +83,22 @@ void main() {
   float n = 0.;
 
   if (u_julia)
-    n = mandelbrot(rot2D(uv * scale + u_position, u_position, u_rotation), u_c,
-                   maxiter, u_radius, !u_frac);
+    n = mandelbrot(rot_2d(uv * scale + u_position, u_position, u_rotation), u_c,
+                   max_iter, u_radius, !u_frac);
   else
-    n = mandelbrot(u_z, rot2D(uv * scale + u_position, u_position, u_rotation),
-                   maxiter, u_radius, !u_frac);
+    n = mandelbrot(u_z, rot_2d(uv * scale + u_position, u_position, u_rotation),
+                   max_iter, u_radius, !u_frac);
 
-  if (n < maxiter) {
-    float c = sqrt(n / maxiter);
+  if (n < max_iter) {
+    float c = 0.;
+    c = sqrt(n / max_iter);
+
     c = clamp(c, 0., 1.);
 
-    color = sin(vec3(0.25, 0.41, 0.6) * c * 50.) * 0.5 + 0.5;
+    vec3 rgb_comp = vec3(.3, 0.1, 0.5);
+    float freq = 12.;
+
+    color = (sin(rgb_comp * freq * c - PI / 2.) + 1.) * 0.5;
   } else
     color = vec3(0.);
 

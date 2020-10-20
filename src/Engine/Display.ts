@@ -65,12 +65,67 @@ export class Display {
     }
   }
 
+  /**
+   * Return window width
+   */
+  get windowWidth() {
+    return window.innerWidth
+  }
+
+  /**
+   * Return window height
+   */
+  get windowHeight() {
+    return window.innerHeight
+  }
+
+  /**
+   * Return display width
+   */
+  get displayWidth() {
+    return this.parent.clientWidth
+  }
+
+  /**
+   * Return display height
+   */
+  get displayHeight() {
+    return this.parent.clientHeight
+  }
+
+  /**
+   * Return display width with device pixel ratio
+   */
+  get displayWidthPixelRatio() {
+    return this.parent.clientWidth * devicePixelRatio
+  }
+
+  /**
+   * Return display height with device pixel ratio
+   */
+  get displayHeightPixelRatio() {
+    return this.parent.clientHeight * devicePixelRatio
+  }
+
+  /**
+   * Return canvas width
+   */
   get width() {
     return this.canvas.width
   }
 
+  /**
+   * Return canvas height
+   */
   get height() {
     return this.canvas.height
+  }
+
+  /**
+   * Return canvas width and height ratio
+   */
+  get ratio() {
+    return this.canvas.width / this.canvas.height
   }
 
   /**
