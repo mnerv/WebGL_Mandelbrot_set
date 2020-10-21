@@ -5,5 +5,9 @@ const SRC_DIR = path.resolve(ROOT_DIR, 'src')
 const STYLE_DIR = path.resolve(ROOT_DIR, 'public', 'styles')
 
 module.exports = {
-  app: [path.join(SRC_DIR, 'app.ts'), path.join(STYLE_DIR, 'main.scss')],
+  app: [
+    path.join(SRC_DIR, 'app.ts'),
+    path.join(STYLE_DIR, 'main.scss'),
+    path.join(STYLE_DIR, 'overlay.scss'),
+  ],
 }

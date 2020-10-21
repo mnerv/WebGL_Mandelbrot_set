@@ -4,3 +4,4 @@ dist
 
 # Files
 *error.log
+*.tsbuildinfo

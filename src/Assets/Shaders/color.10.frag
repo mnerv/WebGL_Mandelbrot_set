@@ -26,6 +26,6 @@ void main() {
 
   color = (sin(rgb_comp * freq * v_uv.x - PI / 2.) + 1.) * 0.5;
 
-  // gl_FragColor = vec4(color, 1.0);
-  gl_FragColor = v_color;
+  gl_FragColor = vec4(color, 1.0);
+  // gl_FragColor = v_color;
 }

@@ -1,4 +1,3 @@
-import { Time } from 'Engine/Time'
 import { clamp } from 'Engine/Math'
 
 type ContextMode = '2d' | 'webgl' | 'webgl2'
@@ -94,14 +93,14 @@ export class Display {
   }
 
   /**
-   * Return display width with device pixel ratio
+   * Return display width times device pixel ratio
    */
   get displayWidthPixelRatio() {
     return this.parent.clientWidth * devicePixelRatio
   }
 
   /**
-   * Return display height with device pixel ratio
+   * Return display height times device pixel ratio
    */
   get displayHeightPixelRatio() {
     return this.parent.clientHeight * devicePixelRatio

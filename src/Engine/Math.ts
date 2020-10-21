@@ -10,7 +10,7 @@ export function lerp(a: number, b: number, n: number): number {
 }
 
 /**
- * Clamp the input value between min and mx
+ * Clamp the input value between min (inclusive) and max (inclusive)
  * @param n Input value
  * @param min Minimum value
  * @param max Maximum value

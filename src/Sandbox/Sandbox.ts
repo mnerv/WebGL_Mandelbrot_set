@@ -1,4 +1,4 @@
-import { MandelbrotProps } from 'Sandbox/Props'
+import { MandelbrotProps } from 'Sandbox/MandelbrotProps'
 import {
   Application,
   Time,
@@ -11,7 +11,7 @@ import {
 
 import VS_Source from 'Assets/Shaders/basic.10.vert'
 import Mandelbrot_Source from 'Assets/Shaders/mandelbrot.10.frag'
-import Color_Source from 'Assets/Shaders/color.10.frag'
+// import Color_Source from 'Assets/Shaders/color.10.frag'
 
 import { Input } from 'Sandbox/Input'
 
@@ -46,9 +46,11 @@ export class Sandbox extends Application {
 
   constructor(parent: HTMLDivElement) {
     super(parent)
-    this.display.setResolution(1 / 2)
-
     this.input = new Input()
+
+    this.mandelbrotProp = new MandelbrotProps()
+
+    this.display.setResolution(this.mandelbrotProp.resolution)
 
     this.input.registerKeyEvents()
     this.input.registerTouchEvents(this.display.canvas)
@@ -82,11 +84,9 @@ export class Sandbox extends Application {
     const ab = new ArrayBuffer(this.gl)
     ab.addBuffer(this.shader, vb, ib, layout)
 
-    this.mandelbrotProp = new MandelbrotProps()
-
     this.mandelbrotProp.radius = 2
     this.shader.setUniform1f('u_radius', this.mandelbrotProp.radius)
-    this.shader.setUniform1i('u_frac', 1)
+    this.shader.setUniform1i('u_frac', 0)
     // this.shader.setUniform1i('u_julia', 1)
     // this.shader.setUniform2fv('u_c', [-0.4, 0.6])
     this.shader.bind()
@@ -101,30 +101,17 @@ export class Sandbox extends Application {
 
     if (this.input.Up) this.mandelbrotProp.moveUp()
     else if (this.input.Down) this.mandelbrotProp.moveDown()
-    else {
-      this.mandelbrotProp.stopUpDown()
-    }
+    else this.mandelbrotProp.stopUpDown()
 
-    if (this.input.ZoomIn) {
-      this.mandelbrotProp.scale[0] -= this.scaleSpeed * time.SElapsed
-      this.mandelbrotProp.scale[1] -= this.scaleSpeed * time.SElapsed
-    } else if (this.input.ZoomOut) {
-      this.mandelbrotProp.scale[0] += this.scaleSpeed * time.SElapsed
-      this.mandelbrotProp.scale[1] += this.scaleSpeed * time.SElapsed
-    } else if (this.input.IsRolling) {
-      this.mandelbrotProp.scale[0] +=
-        this.scaleSpeed * -this.input.WheelDY * 0.25 * time.SElapsed
-      this.mandelbrotProp.scale[1] +=
-        this.scaleSpeed * -this.input.WheelDY * 0.25 * time.SElapsed
-
+    if (this.input.ZoomIn) this.mandelbrotProp.zoom(-time.SElapsed)
+    else if (this.input.ZoomOut) this.mandelbrotProp.zoom(time.SElapsed)
+    else if (this.input.IsRolling) {
+      this.mandelbrotProp.zoom(-time.SElapsed * this.input.WheelDY * 0.25)
       this.input.IsRolling = !this.input.IsRolling
     }
 
-    if (this.input.RotateAnti) {
-      this.mandelbrotProp.rotation -= Math.PI / 60
-    } else if (this.input.RotateClock) {
-      this.mandelbrotProp.rotation += Math.PI / 60
-    }
+    if (this.input.RotateAnti) this.mandelbrotProp.rotate(-1)
+    else if (this.input.RotateClock) this.mandelbrotProp.rotate(1)
 
     if (this.input.Reset) {
       this.resetTimer += time.Elapsed

@@ -21,9 +21,6 @@ export class Input {
   private _reset_rotation: boolean = false
   private _reset_scale: boolean = false
 
-  private _start_x: number = 0
-  private _start_y: number = 0
-
   private _x: number = 0
   private _y: number = 0
 
@@ -107,22 +104,6 @@ export class Input {
     return this._y
   }
 
-  get sX(): number {
-    return this._start_x
-  }
-
-  set sX(value: number) {
-    this._start_x = value
-  }
-
-  get sY(): number {
-    return this._start_y
-  }
-
-  set sY(value: number) {
-    this._start_y = value
-  }
-
   get dX(): number {
     return this._x - this._prev_x
   }
@@ -149,8 +130,8 @@ export class Input {
 
   registerMouseEvents(element: HTMLElement) {
     element.addEventListener('mousedown', this.onMouseDown.bind(this))
-    element.addEventListener('mousemove', this.onMouseMove.bind(this))
-    element.addEventListener('mouseup', this.onMouseUp.bind(this))
+    addEventListener('mousemove', this.onMouseMove.bind(this))
+    addEventListener('mouseup', this.onMouseUp.bind(this))
 
     element.addEventListener('wheel', this.onWheel.bind(this))
 
@@ -241,6 +222,15 @@ export class Input {
         this._reset_scale = state
         break
 
+      case 'Digit1':
+        break
+      case 'Digit2':
+        break
+      case 'Digit3':
+        break
+      case 'Digit4':
+        break
+
       default:
         break
     }
@@ -250,10 +240,12 @@ export class Input {
     if (event.button == 0) {
       this._left_button = true
       this._is_dragging = true
-      this._prev_x = event.clientX * devicePixelRatio
-      this._prev_y = event.clientY * devicePixelRatio
-      this._x = this._prev_x
-      this._y = this._prev_y
+
+      this._x = event.clientX * devicePixelRatio
+      this._y = event.clientY * devicePixelRatio
+
+      this._prev_x = this._x
+      this._prev_y = this._y
     }
   }
 
@@ -275,12 +267,12 @@ export class Input {
       this._left_button = true
       this._is_dragging = true
 
-      this._prev_x = event.touches[0].clientX * devicePixelRatio
-      this._prev_y = event.touches[0].clientY * devicePixelRatio
-      this._x = this._prev_x
-      this._y = this._prev_x
+      this._x = event.touches[0].clientX * devicePixelRatio
+      this._y = event.touches[0].clientY * devicePixelRatio
+
+      this._prev_x = this._x
+      this._prev_y = this._y
     }
-    // this._is_dragging = true
   }
 
   private onTouchMove(event: TouchEvent) {
@@ -304,13 +296,13 @@ export class Input {
       this._x = event.touches[0].clientX * devicePixelRatio
       this._y = event.touches[0].clientY * devicePixelRatio
     }
-    // this._is_dragging = false
   }
 
   private onWheel(event: WheelEvent) {
     event.preventDefault()
     this._wheel_delta_y = event.deltaY
     this._wheel_delta_x = event.deltaX
+
     this._is_rolling = true
   }
 
