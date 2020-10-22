@@ -7,6 +7,7 @@ const PUBLIC_DIR = path.resolve(ROOT_DIR, 'public')
 module.exports = [
   new HtmlWebpackPlugin({
     template: path.join(PUBLIC_DIR, 'index.html'),
+    favicon: path.join(PUBLIC_DIR, 'favicon.png'),
     filename: 'index.html',
     chunks: ['app'],
   }),

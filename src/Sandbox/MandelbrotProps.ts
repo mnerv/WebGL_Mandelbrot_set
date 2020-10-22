@@ -34,6 +34,27 @@ export class MandelbrotProps {
     return Math.pow(2, this.scale[1]) * 0.5
   }
 
+  private isVisisble: boolean = false
+  private settings_container: HTMLDivElement
+  private resolution_scale_input: HTMLInputElement
+
+  constructor() {
+    this.settings_container = document.querySelector(
+      '#settings'
+    ) as HTMLDivElement
+    ;(document.querySelector(
+      '#show-settings'
+    ) as HTMLButtonElement).addEventListener('click', this.onClick.bind(this))
+
+    this.resolution_scale_input = document.querySelector(
+      '#resolution-scale'
+    ) as HTMLInputElement
+    this.resolution_scale_input.addEventListener(
+      'input',
+      this.onInput.bind(this)
+    )
+  }
+
   update(time: Time) {
     const s = Math.sin(this.rotation)
     const c = Math.cos(this.rotation)
@@ -130,5 +151,16 @@ export class MandelbrotProps {
 
   resetZoom() {
     this.scale = [...this.SCALE_DEFAULT]
+  }
+
+  private onClick(event: MouseEvent) {
+    if (!this.isVisisble) this.settings_container.classList.remove('hide')
+    else this.settings_container.classList.add('hide')
+
+    this.isVisisble = !this.isVisisble
+  }
+
+  private onInput(event: Event) {
+    this.resolution = parseFloat(this.resolution_scale_input.value)
   }
 }

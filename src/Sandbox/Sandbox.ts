@@ -143,6 +143,7 @@ export class Sandbox extends Application {
   }
 
   render(time: Time): void {
+    this.display.setResolution(this.mandelbrotProp.resolution)
     this.gl.viewport(0, 0, this.display.width, this.display.height)
 
     this.gl.clear(this.gl.DEPTH_BUFFER_BIT | this.gl.COLOR_BUFFER_BIT)
