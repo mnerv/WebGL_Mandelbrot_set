@@ -30,12 +30,23 @@ export abstract class Application {
   constructor(parent?: HTMLDivElement) {
     this.display = new Display(parent)
     this.time = new Time()
+
+    addEventListener('resize', this.onResize.bind(this))
+  }
+
+  private onResize() {
+    this.stop()
+    if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
+    this.resizeTimeout = setTimeout(() => {
+      if (this.started) this.run()
+    }, this.TIMEOUT_DELAY)
   }
 
   /**
    * Start the Application's main loop
    */
   start(): Application {
+    this.started = true
     this.run()
     return this
   }
@@ -69,8 +80,12 @@ export abstract class Application {
 
   private static instance: Application
   private animationID: number = -1
+  private started: boolean = false
 
   private time: Time
+
+  private TIMEOUT_DELAY: number = 100 // ms
+  private resizeTimeout!: ReturnType<typeof setTimeout>
 
   /**
    * Application main loop
@@ -80,7 +95,7 @@ export abstract class Application {
 
     this.update(this.time)
 
-    this.display.resize()
+    this.display.update(this.time)
     this.render(this.time)
 
     this.animationID = requestAnimationFrame(this.run.bind(this))

@@ -22,18 +22,17 @@ h3 {
   margin-top: 0;
 }
 
-#app,
-#Display {
+#app {
   height: 100%;
   width: 100%;
 }
 
-#DisplayRenderer {
-  image-rendering: -moz-crisp-edges;
-  image-rendering: -webkit-crisp-edges;
-  image-rendering: pixelated;
+canvas {
   image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
 
+#DisplayRenderer {
   cursor: grab;
 }
 

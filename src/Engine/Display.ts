@@ -1,3 +1,4 @@
+import { Time } from './Time'
 import { clamp } from 'Engine/Math'
 
 type ContextMode = '2d' | 'webgl' | 'webgl2'
@@ -10,6 +11,8 @@ export class Display {
   canvas: HTMLCanvasElement
 
   private resolution: number = 1.0
+
+  canResize: boolean = true
 
   /**
    * Create display area.
@@ -32,6 +35,10 @@ export class Display {
     this.parent.appendChild(this.canvas)
 
     this.setFill()
+    this.resize()
+  }
+
+  update(time: Time): void {
     this.resize()
   }
 
@@ -139,6 +146,13 @@ export class Display {
 
   getContext(mode: ContextMode) {
     return this.canvas.getContext(mode)
+  }
+
+  getWebGLContext(): WebGLRenderingContext {
+    const context = this.canvas.getContext('webgl')
+    if (!context) throw new Error("Error can't get WebGL context")
+
+    return context as WebGLRenderingContext
   }
 }
 
