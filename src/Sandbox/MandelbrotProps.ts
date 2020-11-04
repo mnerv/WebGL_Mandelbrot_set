@@ -43,15 +43,15 @@ export class MandelbrotProps {
       '#settings'
     ) as HTMLDivElement
     ;(document.querySelector(
-      '#show-settings'
+      '#btn-show-settings'
     ) as HTMLButtonElement).addEventListener('click', this.onClick.bind(this))
 
     this.resolution_scale_input = document.querySelector(
       '#resolution-scale'
     ) as HTMLInputElement
     this.resolution_scale_input.addEventListener(
-      'input',
-      this.onInput.bind(this)
+      'change',
+      this.onChange.bind(this)
     )
   }
 
@@ -160,7 +160,7 @@ export class MandelbrotProps {
     this.isVisisble = !this.isVisisble
   }
 
-  private onInput(event: Event) {
+  private onChange(event: Event) {
     this.resolution = parseFloat(this.resolution_scale_input.value)
   }
 }

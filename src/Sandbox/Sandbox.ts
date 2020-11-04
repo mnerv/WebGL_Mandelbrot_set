@@ -46,6 +46,7 @@ export class Sandbox extends Application {
 
   constructor(parent: HTMLDivElement) {
     super(parent)
+
     this.input = new Input()
 
     this.mandelbrotProp = new MandelbrotProps()
@@ -56,7 +57,7 @@ export class Sandbox extends Application {
     this.input.registerTouchEvents(this.display.canvas)
     this.input.registerMouseEvents(this.display.canvas)
 
-    this.gl = this.display.getContext('webgl') as WebGLRenderingContext
+    this.gl = this.display.getWebGLContext()
     this.gl.clearColor(0.0, 195 / 255, 255 / 255, 1.0)
 
     this.shader = new Shader(this.gl, VS_Source, Mandelbrot_Source)

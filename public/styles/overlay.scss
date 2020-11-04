@@ -7,7 +7,7 @@
   display: none;
 }
 
-#show-settings {
+#btn-show-settings {
   right: 5pt;
 
   background-color: #222222;
@@ -28,12 +28,13 @@
     height: 1.3em;
   }
 
+  outline: none;
   border: none;
   border-radius: 5pt;
   cursor: pointer;
 }
 
-#show-settings:hover {
+#btn-show-settings:hover {
   background-color: whitesmoke;
 
   svg {
@@ -41,7 +42,7 @@
   }
 }
 
-#show-settings:active {
+#btn-show-settings:active {
   background-color: #161616;
   svg {
     color: white;
