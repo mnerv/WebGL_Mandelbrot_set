@@ -62,3 +62,10 @@
     border-bottom: solid hsl(0, 0%, 20%) 2px;
   }
 }
+
+.settings:focus-within,
+.settings:active {
+  #settings {
+    opacity: 0.5;
+  }
+}

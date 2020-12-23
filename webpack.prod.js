@@ -1,5 +1,4 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 const path = require('path')
 
@@ -91,12 +90,12 @@ const resolve = {
 // Plugins
 const plugins = [
   ...HTML_FILES,
-  new FaviconsWebpackPlugin({
-    logo: path.join(PUBLIC_DIR, 'favicon.png'),
-    cache: true,
-    publicPath: PUBLIC_PATH,
-    outputPath: '/static/assets',
-  }),
+  // new FaviconsWebpackPlugin({
+  //   logo: path.join(PUBLIC_DIR, 'favicon.png'),
+  //   cache: true,
+  //   publicPath: PUBLIC_PATH,
+  //   outputPath: '/static/assets',
+  // }),
   new MiniCssExtractPlugin({
     filename: 'static/[name].[contenthash].css',
     chunkFilename: '[id].[contenthash].css',

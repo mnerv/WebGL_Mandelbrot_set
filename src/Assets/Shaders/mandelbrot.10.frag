@@ -24,7 +24,12 @@ uniform float u_radius;
 uniform vec2 u_z;
 uniform vec2 u_c;
 uniform bool u_julia;
+
 uniform bool u_frac;
+
+uniform mat4 u_model;
+uniform mat4 u_view;
+uniform mat4 u_projection;
 
 vec2 rot_2d(vec2 p, vec2 pivot, float a) {
   float s = sin(a);
@@ -51,7 +56,7 @@ float mandelbrot(vec2 _z, vec2 _c, float max_iter, float radius,
 
   float iterations = 0.;
   for (float i = 0.; i < MAX_ITER; i++) {
-    if (i > max_iter - 1.)
+    if (i > max_iter)
       break;
 
     z = vec2(z.x * z.x - z.y * z.y, 2. * z.x * z.y) + c;
@@ -75,7 +80,7 @@ float mandelbrot(vec2 _z, vec2 _c, float max_iter, float radius,
 void main() {
   vec2 uv = ((v_uv - 0.5) * u_resolution) / u_resolution.y;
 
-  float max_iter = 256.; // Temp
+  float max_iter = 512.; // Temp
   vec3 color = vec3(0.);
 
   vec2 scale = vec2(pow(2., u_scale.x), pow(2., u_scale.y));
@@ -89,10 +94,10 @@ void main() {
     n = mandelbrot(u_z, rot_2d(uv * scale + u_position, u_position, u_rotation),
                    max_iter, u_radius, !u_frac);
 
-  if (n < max_iter) {
-    float c = 0.;
-    c = sqrt(n / max_iter);
+  float c = 0.;
 
+  if (n < max_iter - 5.) {
+    c = sqrt(n / max_iter);
     c = clamp(c, 0., 1.);
 
     vec3 rgb_comp = vec3(.3, 0.1, 0.5);

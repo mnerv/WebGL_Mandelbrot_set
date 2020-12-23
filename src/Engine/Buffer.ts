@@ -8,6 +8,11 @@ interface BufferElement {
   offset: number
 }
 
+/**
+ * Buffer Layout
+ *
+ * The description of data buffer for Verticies
+ */
 export class BufferLayout {
   elements: BufferElement[]
   stride: number
@@ -18,20 +23,15 @@ export class BufferLayout {
   }
 
   /**
-   * Create a memory layout
+   * Create a description of memory layout
+   *
    * @param count Size of the variable
    * @param name Name of the attribute location
    * @param type Attribute type
    * @param normalized
    * @param bytes byte size of the value
    */
-  push(
-    count: number,
-    name: string,
-    type: number,
-    normalized: boolean,
-    bytes: number
-  ) {
+  push(count: number, name: string, type: number, normalized: boolean) {
     this.elements.push({
       name,
       type,
@@ -40,7 +40,7 @@ export class BufferLayout {
       offset: this.stride,
     })
 
-    this.stride += count * bytes
+    this.stride += count * Float32Array.BYTES_PER_ELEMENT
   }
 
   getStride(): number {
@@ -48,6 +48,9 @@ export class BufferLayout {
   }
 }
 
+/**
+ * Vertex Buffer
+ */
 export class VertexBuffer {
   private bufferID: WebGLBuffer
   private gl: WebGLRenderingContext
@@ -76,6 +79,9 @@ export class VertexBuffer {
   }
 }
 
+/**
+ * Index Buffer also known as Element Buffer
+ */
 export class IndexBuffer {
   private gl: WebGLRenderingContext
   private bufferID: WebGLBuffer
@@ -100,6 +106,9 @@ export class IndexBuffer {
   }
 }
 
+/**
+ * Array Buffer
+ */
 export class ArrayBuffer {
   private gl: WebGLRenderingContext
 
@@ -107,19 +116,15 @@ export class ArrayBuffer {
     this.gl = gl
   }
 
-  addBuffer(
-    shader: Shader,
-    vb: VertexBuffer,
-    ib: IndexBuffer,
-    layout: BufferLayout
-  ) {
+  addBuffer(shader: Shader, vb: VertexBuffer, layout: BufferLayout) {
     shader.bind()
     vb.bind()
 
+    let element, location
     for (let i = 0; i < layout.elements.length; i++) {
-      const element = layout.elements[i]
+      element = layout.elements[i]
 
-      const location = this.gl.getAttribLocation(shader.id, element.name)
+      location = this.gl.getAttribLocation(shader.id, element.name)
       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vb.id)
       this.gl.vertexAttribPointer(
         location,
@@ -130,10 +135,6 @@ export class ArrayBuffer {
         element.offset
       )
       this.gl.enableVertexAttribArray(location)
-
-      if (element.name.includes('pos')) {
-        ib.bind()
-      }
     }
   }
 }

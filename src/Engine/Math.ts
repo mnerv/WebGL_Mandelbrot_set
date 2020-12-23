@@ -1,5 +1,6 @@
 /**
  * Linear interpolation
+ *
  * @param a Value a, number
  * @param b Value b, number
  * @param n Interpolation factor
@@ -11,6 +12,7 @@ export function lerp(a: number, b: number, n: number): number {
 
 /**
  * Clamp the input value between min (inclusive) and max (inclusive)
+ *
  * @param n Input value
  * @param min Minimum value
  * @param max Maximum value
@@ -22,6 +24,7 @@ export function clamp(n: number, min: number, max: number): number {
 
 /**
  * Map input value to new range
+ *
  * @param n Input value
  * @param in_min Input minimum range
  * @param in_max Input maximum range
