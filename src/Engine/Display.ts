@@ -18,6 +18,7 @@ export class Display {
    * Create display area.
    *
    * Contains parent element with canvas element inside with width and height sets to 100%.
+   *
    * @param parent Parent element canvas appends to
    */
   constructor(parent?: HTMLDivElement) {

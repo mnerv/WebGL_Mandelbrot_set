@@ -1,6 +1,8 @@
 /**
  * Keeps track of time since the start of application.
  *
+ * TODO: This needs to be rewrite for more control later
+ *
  * Getters
  *
  * `Total`: Total time since start in ms

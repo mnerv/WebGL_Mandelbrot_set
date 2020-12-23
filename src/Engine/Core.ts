@@ -1,3 +1,4 @@
+export const BASIC_VS = `
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -22,7 +23,25 @@ void main() {
   v_color = a_color;
   v_uv = a_uv;
 
-  vec3 pos = a_position + vec3(2., 0., 0.);
-
-  gl_Position = vec4(a_position, 1.0);
+  gl_Position = u_projection * u_view * u_model * vec4(a_position, 1.0);
 }
+`
+
+export const BASIC_FS = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+
+varying vec4 v_color;
+varying vec2 v_uv;
+
+uniform vec2 u_resolution;
+uniform float u_time;
+uniform vec4 u_color;
+
+void main() {
+  gl_FragColor = v_color;
+}
+`

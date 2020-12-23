@@ -27,6 +27,11 @@ import { Time } from 'Engine/Time'
  * ```
  */
 export abstract class Application {
+  /**
+   * Create an Application
+   *
+   * @param parent HTML element that the canvas will be append to
+   */
   constructor(parent?: HTMLDivElement) {
     this.display = new Display(parent)
     this.time = new Time()
@@ -60,18 +65,16 @@ export abstract class Application {
     return true
   }
 
-  getInstance(): Application {
-    return this
-  }
-
   /**
    * update is called every frame
+   *
    * @param time Time object
    */
   abstract update(time: Time): void
 
   /**
    * render is called every frame
+   *
    * @param time Time object
    */
   abstract render(time: Time): void

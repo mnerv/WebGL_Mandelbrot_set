@@ -66,24 +66,12 @@ export class Sandbox extends Application {
     const ib = new IndexBuffer(this.gl, indices)
 
     const layout = new BufferLayout()
-    layout.push(
-      3,
-      'a_position',
-      this.gl.FLOAT,
-      false,
-      Float32Array.BYTES_PER_ELEMENT
-    )
-    layout.push(
-      4,
-      'a_color',
-      this.gl.FLOAT,
-      false,
-      Float32Array.BYTES_PER_ELEMENT
-    )
-    layout.push(2, 'a_uv', this.gl.FLOAT, false, Float32Array.BYTES_PER_ELEMENT)
+    layout.push(3, 'a_position', this.gl.FLOAT, false)
+    layout.push(4, 'a_color', this.gl.FLOAT, false)
+    layout.push(2, 'a_uv', this.gl.FLOAT, false)
 
     const ab = new ArrayBuffer(this.gl)
-    ab.addBuffer(this.shader, vb, ib, layout)
+    ab.addBuffer(this.shader, vb, layout)
 
     this.mandelbrotProp.radius = 2
     this.shader.setUniform1f('u_radius', this.mandelbrotProp.radius)
