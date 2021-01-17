@@ -13,14 +13,9 @@ varying vec2 v_uv;
 uniform vec2 u_resolution;
 uniform float u_time;
 
+uniform sampler2D u_texture;
 void main() {
   vec2 uv = ((v_uv - 0.5) * u_resolution) / u_resolution.y;
 
-  vec3 color = vec3(0.);
-  vec3 rgb_comp = vec3(.3, 0.1, 0.5);
-  float freq = 12.;
-
-  color = (sin(rgb_comp * freq * v_uv.x - PI / 2.) + 1.) * 0.5;
-
-  gl_FragColor = vec4(color, 1.0);
+  gl_FragColor = texture2D(u_texture, v_uv);
 }

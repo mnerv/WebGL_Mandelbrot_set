@@ -22,7 +22,5 @@ void main() {
   v_color = a_color;
   v_uv = a_uv;
 
-  vec3 pos = a_position + vec3(2., 0., 0.);
-
   gl_Position = vec4(a_position, 1.0);
 }

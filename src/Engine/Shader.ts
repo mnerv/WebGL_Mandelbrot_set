@@ -2,7 +2,6 @@
  * Shader class use for compiling shader program
  */
 export class Shader {
-  private gl: WebGLRenderingContext
   private rendererID: WebGLProgram
 
   get id(): WebGLProgram {
@@ -16,8 +15,11 @@ export class Shader {
    * @param vertex Vertex shader program source
    * @param fragment Fragment shader program source
    */
-  constructor(gl: WebGLRenderingContext, vertex: string, fragment: string) {
-    this.gl = gl
+  constructor(
+    private gl: WebGLRenderingContext,
+    vertex: string,
+    fragment: string
+  ) {
     this.rendererID = this.createShader(vertex, fragment)
   }
 
@@ -26,7 +28,7 @@ export class Shader {
   }
 
   unbind(): void {
-    this.gl.useProgram(0)
+    this.gl.useProgram(null)
   }
 
   setUniform1f(location: string, x: number) {
