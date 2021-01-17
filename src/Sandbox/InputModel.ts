@@ -3,10 +3,10 @@ import { Time } from 'Engine/Time'
 
 type vec2 = [number, number]
 
-export class MandelbrotProps {
+export class InputModel {
   SPEED_DEFAULT: number = 1
   SMOOTH_STEP_DEFAULT: number = 0.03
-  SCALE_DEFAULT: vec2 = [2, 2]
+  SCALE_DEFAULT: number = 2
   POSITION_DEFAULT: vec2 = [0, 0]
   ROTATION_SPEED_DEFAULT: number = Math.PI / 60
   RESOLUTION_DEFAULT: number = 1
@@ -16,8 +16,8 @@ export class MandelbrotProps {
 
   position: vec2 = [...this.POSITION_DEFAULT]
   realPosition: vec2 = [...this.position]
-  scale: vec2 = [...this.SCALE_DEFAULT]
-  realScale: vec2 = [...this.scale]
+  scale: number = this.SCALE_DEFAULT
+  realScale: number = this.scale
   rotation: number = 0
   realRotation: number = 0
   radius: number = 10
@@ -27,11 +27,11 @@ export class MandelbrotProps {
   private smooth_step: number = this.SMOOTH_STEP_DEFAULT
 
   private get move_step_x(): number {
-    return Math.pow(2, this.scale[0]) * 0.5
+    return Math.pow(2, this.scale) * 0.5
   }
 
   private get move_step_y(): number {
-    return Math.pow(2, this.scale[1]) * 0.5
+    return Math.pow(2, this.scale) * 0.5
   }
 
   private isVisisble: boolean = false
@@ -68,12 +68,9 @@ export class MandelbrotProps {
         this.move_step_y * this.direction[1] * c) *
       time.SElapsed
 
-    this.realScale[0] =
-      lerp(this.realScale[0], this.scale[0], this.smooth_step) +
-      (this.scale[0] - this.realScale[0]) * time.SElapsed
-    this.realScale[1] =
-      lerp(this.realScale[1], this.scale[1], this.smooth_step) +
-      (this.scale[1] - this.realScale[1]) * time.SElapsed
+    this.realScale =
+      lerp(this.realScale, this.scale, this.smooth_step) +
+      (this.scale - this.realScale) * time.SElapsed
 
     this.realRotation =
       lerp(this.realRotation, this.rotation, this.smooth_step) +
@@ -91,8 +88,8 @@ export class MandelbrotProps {
     // const s = Math.sin(this.rotation)
     // const c = Math.cos(this.rotation)
 
-    this.realPosition[0] -= dx * Math.pow(2, this.scale[0])
-    this.realPosition[1] += dy * Math.pow(2, this.scale[1])
+    this.realPosition[0] -= dx * Math.pow(2, this.scale)
+    this.realPosition[1] += dy * Math.pow(2, this.scale)
 
     // this.realPosition[0] -=
     //   dx * Math.pow(2, this.scale[0]) * c - dy * Math.pow(2, this.scale[1]) * s
@@ -103,8 +100,7 @@ export class MandelbrotProps {
   }
 
   zoom(dir: number) {
-    this.scale[0] += dir * this.SCALE_SPEED_DEFAULT
-    this.scale[1] += dir * this.SCALE_SPEED_DEFAULT
+    this.scale += dir * this.SCALE_SPEED_DEFAULT
   }
 
   rotate(dir: number) {
@@ -150,7 +146,7 @@ export class MandelbrotProps {
   }
 
   resetZoom() {
-    this.scale = [...this.SCALE_DEFAULT]
+    this.scale = this.SCALE_DEFAULT
   }
 
   private onClick(event: MouseEvent) {

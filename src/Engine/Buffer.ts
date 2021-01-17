@@ -1,6 +1,6 @@
-import { Shader } from 'Engine/Engine'
+import { Shader, Texture } from 'Engine/Engine'
 
-interface BufferElement {
+type BufferElement = {
   name: string
   type: number
   count: number
@@ -53,28 +53,22 @@ export class BufferLayout {
  */
 export class VertexBuffer {
   private bufferID: WebGLBuffer
-  private gl: WebGLRenderingContext
 
   get id(): WebGLBuffer {
     return this.bufferID
   }
 
-  constructor(gl: WebGLRenderingContext, data: number[]) {
-    this.gl = gl
-    this.bufferID = this.gl.createBuffer() as WebGLBuffer
+  constructor(private gl: WebGLRenderingContext, data: number[]) {
+    this.bufferID = gl.createBuffer() as WebGLBuffer
     this.bind()
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      new Float32Array(data),
-      this.gl.STATIC_DRAW
-    )
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW)
   }
 
   bind(): void {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferID)
   }
 
-  unBind(): void {
+  unbind(): void {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, 0)
   }
 }
@@ -83,17 +77,15 @@ export class VertexBuffer {
  * Index Buffer also known as Element Buffer
  */
 export class IndexBuffer {
-  private gl: WebGLRenderingContext
   private bufferID: WebGLBuffer
 
-  constructor(gl: WebGLRenderingContext, data: number[]) {
-    this.gl = gl
-    this.bufferID = this.gl.createBuffer() as WebGLBuffer
+  constructor(private gl: WebGLRenderingContext, data: number[]) {
+    this.bufferID = gl.createBuffer() as WebGLBuffer
     this.bind()
-    this.gl.bufferData(
-      this.gl.ELEMENT_ARRAY_BUFFER,
+    gl.bufferData(
+      gl.ELEMENT_ARRAY_BUFFER,
       new Uint16Array(data),
-      this.gl.STATIC_DRAW
+      gl.STATIC_DRAW
     )
   }
 
@@ -101,7 +93,7 @@ export class IndexBuffer {
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferID)
   }
 
-  unBind(): void {
+  unbind(): void {
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, 0)
   }
 }
@@ -110,11 +102,7 @@ export class IndexBuffer {
  * Array Buffer
  */
 export class ArrayBuffer {
-  private gl: WebGLRenderingContext
-
-  constructor(gl: WebGLRenderingContext) {
-    this.gl = gl
-  }
+  constructor(private gl: WebGLRenderingContext) {}
 
   addBuffer(shader: Shader, vb: VertexBuffer, layout: BufferLayout) {
     shader.bind()
@@ -136,5 +124,31 @@ export class ArrayBuffer {
       )
       this.gl.enableVertexAttribArray(location)
     }
+  }
+}
+
+export class FrameBuffer {
+  private bufferID: WebGLFramebuffer
+
+  constructor(private gl: WebGLRenderingContext) {
+    this.bufferID = gl.createFramebuffer()!
+  }
+
+  attach(texture: Texture) {
+    this.gl.framebufferTexture2D(
+      this.gl.FRAMEBUFFER,
+      this.gl.COLOR_ATTACHMENT0,
+      this.gl.TEXTURE_2D,
+      texture.Texture,
+      texture.Level
+    )
+  }
+
+  bind(): void {
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.bufferID)
+  }
+
+  unbind(): void {
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
   }
 }

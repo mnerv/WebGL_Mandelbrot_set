@@ -16,8 +16,9 @@ uniform vec2 u_resolution;
 uniform float u_time;
 
 uniform vec2 u_position;
-uniform vec2 u_scale;
 uniform float u_rotation;
+uniform float u_iterations;
+uniform float u_scale;
 
 uniform float u_radius;
 
@@ -83,7 +84,7 @@ void main() {
   float max_iter = 512.; // Temp
   vec3 color = vec3(0.);
 
-  vec2 scale = vec2(pow(2., u_scale.x), pow(2., u_scale.y));
+  float scale = pow(2., u_scale);
 
   float n = 0.;
 
@@ -96,7 +97,7 @@ void main() {
 
   float c = 0.;
 
-  if (n < max_iter - 5.) {
+  if (n < max_iter) {
     c = sqrt(n / max_iter);
     c = clamp(c, 0., 1.);
 
