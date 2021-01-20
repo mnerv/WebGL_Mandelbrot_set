@@ -51,8 +51,10 @@ export class Texture {
     this.border = 0
     this.srcFormat = gl.RGBA
     this.srcType = gl.UNSIGNED_BYTE
-    this.loadData(null)
+    this.loadData()
 
+    // TEMPORARY
+    // TODO: Abstract this away
     this.gl.texParameteri(
       this.gl.TEXTURE_2D,
       this.gl.TEXTURE_WRAP_S,
@@ -75,8 +77,9 @@ export class Texture {
     )
   }
 
-  loadData(data: Uint8Array | null) {
-    this.data = data
+  loadData(data?: Uint8Array) {
+    this.data = data ? data : null
+
     this.bind()
     this.gl.texImage2D(
       this.gl.TEXTURE_2D,
@@ -102,12 +105,14 @@ export class Texture {
       image
     )
 
+    // Check if the image is power of 2
     if (
       image.width % (image.width - 1) == 0 &&
       image.height % (image.height - 1) == 0
     )
       this.gl.generateMipmap(this.gl.TEXTURE_2D)
     else {
+      // TODO: Abstract this away later
       this.gl.texParameteri(
         this.gl.TEXTURE_2D,
         this.gl.TEXTURE_WRAP_S,
@@ -127,7 +132,7 @@ export class Texture {
   }
 
   bind(slot: number = 0): void {
-    this.gl.activeTexture(this.gl.TEXTURE0)
+    this.gl.activeTexture(this.gl.TEXTURE0 + slot)
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture)
   }
 

@@ -151,7 +151,7 @@ export class Sandbox extends Application {
 
     this.targetTexture.Width = this.display.width * this.inputModel.resolution
     this.targetTexture.Height = this.display.height * this.inputModel.resolution
-    this.targetTexture.loadData(null)
+    this.targetTexture.loadData()
     this.frameBuffer.bind()
     this.frameBuffer.attach(this.targetTexture)
     this.frameBuffer.unbind()
