@@ -6,13 +6,16 @@
     QUAD_VERTICES,
     QUAD_INDICES,
     TRIANGLE_INDICES,
-    TRIANGLE_VERTICES
+    TRIANGLE_VERTICES,
+    FrameBuffer
   } from './Rin'
 
   import VertexShader from './shaders/basic.10.vert'
   import FragmentShader from './shaders/basic.10.frag'
   import TextureShader from './shaders/texture.10.frag'
   import MandelbrotShader from './shaders/mandelbrot.10.frag'
+
+  let tick = 0
 
   let canvas: HTMLCanvasElement
   let gl: WebGL2RenderingContext
@@ -30,37 +33,55 @@
   let quadIndex: WebGLBuffer
   let quadArray: WebGLVertexArrayObject
 
-  let frameBufferSize: vec2 = [64, 64]
-  let frameBufferTexture: WebGLTexture
-  let frameBuffer: WebGLFramebuffer
+  let output: FrameBuffer
 
   let currentPointer = vec2.create()
   let previousPointer = vec2.create()
 
+  let width = 0
+  let height = 0
+
+  function resize() {
+    const displayWidth = Math.round(canvas.clientWidth * devicePixelRatio)
+    const displayHeight = Math.round(canvas.clientHeight * devicePixelRatio)
+
+    if (width != displayWidth || height != displayHeight) {
+      canvas.width = displayWidth
+      canvas.height = displayHeight
+      output.resize(canvas.width, canvas.height)
+    }
+  }
+
+
   function loop(now: number) {
+    tick += 1
+
+    resize()
     // First pass
     gl.useProgram(shader)
-    gl.uniform2f(gl.getUniformLocation(shader, 'u_resolution'), frameBufferSize[0], frameBufferSize[1])
-    gl.uniform1f(gl.getUniformLocation(shader, 'u_time'), now / 1000)
+    gl.uniform2fv(gl.getUniformLocation(shader, 'u_resolution'), output.getSize())
+    gl.uniform1f(gl.getUniformLocation(shader, 'u_time'), tick / 60)
 
-    gl.bindVertexArray(triangleArray)
-    gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertex)
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleIndex)
+    // gl.bindVertexArray(triangleArray)
+    // gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertex)
+    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleIndex)
+    gl.bindVertexArray(quadArray)
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadVertex)
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, quadIndex)
 
     // Render to framebuffer
-    gl.bindTexture(gl.TEXTURE_2D, null)
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer)
-    gl.viewport(0, 0, frameBufferSize[0], frameBufferSize[1])
+    output.bind()
+    gl.viewport(0, 0, output.getWidth(), output.getHeight())
     gl.clearColor(0.0, 0.0, 0.0, 1.0)
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT)
-    gl.drawElements(gl.TRIANGLES, TRIANGLE_INDICES.length, gl.UNSIGNED_SHORT, 0)
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+    gl.drawElements(gl.TRIANGLES, QUAD_INDICES.length, gl.UNSIGNED_SHORT, 0)
+    // gl.drawElements(gl.TRIANGLES, TRIANGLE_INDICES.length, gl.UNSIGNED_SHORT, 0)
+    output.unbind()
 
     // Second pass
-
-    gl.bindTexture(gl.TEXTURE_2D, frameBufferTexture)
     gl.useProgram(textureShader)
-    gl.activeTexture(gl.TEXTURE0)
+    output.bindTarget(0)
+    gl.uniform1i(gl.getUniformLocation(textureShader, 'u_texture'), 0)
 
     gl.bindVertexArray(quadArray)
     gl.bindBuffer(gl.ARRAY_BUFFER, quadVertex)
@@ -74,6 +95,21 @@
 
     animationID = requestAnimationFrame(loop)
   }
+
+  function startLoop() {
+    loop(0)
+  }
+  function stopLoop() {
+    cancelAnimationFrame(animationID)
+    animationID = 0
+  }
+
+  type BinaryState<T> = {
+    A: boolean,
+    B: boolean,
+    e: T
+  }
+  const keyboardStatusMap: Map<string, BinaryState<KeyboardEvent>> = new Map()
 
   function onMouseDown(e: MouseEvent) {
     //
@@ -98,15 +134,46 @@
     //
   }
   function onKeyDown(e: KeyboardEvent) {
-    //
+    if (!keyboardStatusMap.has(e.code)) {
+      keyboardStatusMap.set(e.code, { A: true, B: false, e })
+      onKeyTyped(e)
+    }
+    const status = keyboardStatusMap.get(e.code)
+    status.B = status.A
+    status.A = true
+    status.e = e
+    if (status.A != status.B) onKeyTyped(e)
   }
   function onKeyUp(e: KeyboardEvent) {
-    //
+    if (!keyboardStatusMap.has(e.code))
+      keyboardStatusMap.set(e.code, { A: true, B: false, e })
+    const status = keyboardStatusMap.get(e.code)
+    status.B = status.A
+    status.A = false
+    status.e = e
+  }
+  function onKeyTyped(e: KeyboardEvent) {
+    if (e.code === 'Space') {
+      if (animationID === 0)
+        startLoop()
+      else
+        stopLoop()
+    }
+
+    if (e.code === 'KeyQ')
+      stopLoop()
+  }
+  function onFocus(e: FocusEvent) {
+    if (animationID !== 0) return
+    startLoop()
+  }
+  function onBlur(e: FocusEvent) {
+    if (animationID === 0) return
+    stopLoop()
   }
 
+
   onMount(async () => {
-    canvas.width  = canvas.clientWidth * devicePixelRatio
-    canvas.height = canvas.clientHeight * devicePixelRatio
     gl = canvas.getContext('webgl2')
 
     const vertexSource = await fetch(VertexShader).then(res => res.text())
@@ -159,23 +226,8 @@
     gl.vertexAttribPointer(2, 2, gl.FLOAT, false, stride, 7 * Float32Array.BYTES_PER_ELEMENT)
     gl.enableVertexAttribArray(2)
 
-    // Render buffer
-    frameBufferTexture = gl.createTexture()
-    gl.bindTexture(gl.TEXTURE_2D, frameBufferTexture)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, frameBufferSize[0], frameBufferSize[1], 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-
-    frameBuffer = gl.createFramebuffer()
-    gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer)
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, frameBufferTexture, 0)
-
-    gl.bindTexture(gl.TEXTURE_2D, null)
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-    gl.bindBuffer(gl.ARRAY_BUFFER, null)
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null)
+    output = new FrameBuffer(gl, 8, 8)
+    resize()
 
     window.addEventListener('mousedown', onMouseDown)
     window.addEventListener('mousemove', onMouseMove)
@@ -186,8 +238,10 @@
     window.addEventListener('touchend', onTouchEnd)
     window.addEventListener('keydown', onKeyDown)
     window.addEventListener('keyup', onKeyUp)
+    window.addEventListener('focus', onFocus)
+    window.addEventListener('blur', onBlur)
 
-    loop(0)
+    startLoop()
   })
 
   onDestroy(async () => {
@@ -200,8 +254,10 @@
     window.removeEventListener('touchend', onTouchEnd)
     window.removeEventListener('keydown', onKeyDown)
     window.removeEventListener('keyup', onKeyUp)
+    window.removeEventListener('focus', onFocus)
+    window.removeEventListener('blur', onBlur)
 
-    cancelAnimationFrame(animationID)
+    stopLoop()
     gl = null
   })
 </script>

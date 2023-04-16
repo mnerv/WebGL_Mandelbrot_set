@@ -52,7 +52,54 @@ export function shaderProgram(gl: WebGL2RenderingContext, vertex: string, fragme
   return program
 }
 
-export class VertexBuffer {
-  constructor(private gl: WebGL2RenderingContext, data: Float32Array, layout: BufferElement[]) {
+export class FrameBuffer {
+  constructor(private gl: WebGL2RenderingContext, width: number, height: number) {
+    this.buffer = gl.createFramebuffer()
+    this.target = gl.createTexture()
+
+    this.bindTarget()
+    // Texture parameter
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+
+    this.bind()
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.target, 0)
+    this.resize(width, height)
   }
+
+  getSize() { return [this.width, this.height] }
+  getWidth() { return this.width }
+  getHeight() { return this.height }
+
+  resize(width: number, height: number) {
+    this.width = width
+    this.height = height
+    this.bindTarget()
+    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, width, height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null)
+    this.unbindTarget()
+  }
+
+  bind() {
+    this.unbindTarget()
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.buffer)
+  }
+
+  unbind() {
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
+  }
+
+  bindTarget(slot = 0) {
+    this.gl.activeTexture(this.gl.TEXTURE0 + slot)
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.target)
+  }
+  unbindTarget() {
+    this.gl.bindTexture(this.gl.TEXTURE_2D, null)
+  }
+
+  private buffer: WebGLFramebuffer
+  private target: WebGLTexture
+  private width: number
+  private height: number
 }
